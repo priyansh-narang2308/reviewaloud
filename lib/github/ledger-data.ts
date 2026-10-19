@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { GitHubClient } from "./client";
-import { prPath, type PrRef } from "./pr";
+import { githubUrl, prPath, type PrRef } from "./pr";
 
 // Read-only GitHub data the Promise Ledger needs.
 
@@ -11,7 +11,7 @@ const reviewCommentSchema = z.object({
   pull_request_review_id: z.number().nullable().optional(),
   path: z.string(),
   body: z.string(),
-  html_url: z.string(),
+  html_url: githubUrl,
   diff_hunk: z.string().nullable().optional(),
   line: z.number().nullable().optional(),
   side,
@@ -151,7 +151,7 @@ export async function getCiSummary(gh: GitHubClient, ref: PrRef, sha: string): P
   return { state, passed, failed, pending, failing };
 }
 
-const replySchema = z.object({ id: z.number(), html_url: z.string(), in_reply_to_id: z.number().nullable().optional() });
+const replySchema = z.object({ id: z.number(), html_url: githubUrl, in_reply_to_id: z.number().nullable().optional() });
 
 export async function replyToReviewComment(gh: GitHubClient, ref: PrRef, commentId: number, body: string) {
   return gh.request("POST", `${prPath(ref)}/comments/${commentId}/replies`, { schema: replySchema, body: { body } });

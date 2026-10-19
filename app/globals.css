@@ -99,7 +99,8 @@ a.btn:active {
 /* Landing entrance: rare, first-visit only, so a short stagger is fine. */
 @keyframes ra-rise {
   from {
-    opacity: 0;
+    /* 0.01, not 0: fully transparent text isn't counted as LCP until it appears. */
+    opacity: 0.01;
     transform: translateY(8px);
   }
   to {

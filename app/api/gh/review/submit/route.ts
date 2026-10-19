@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getReview, submitReview } from "@/lib/github/reviews";
 import { prRefSchema } from "@/lib/publish/plan";
 import { authorizeWrite, fail, githubFailure } from "@/lib/publish/server";
+import { isSameOrigin } from "@/lib/http/guard";
 
 const bodySchema = z.object({
   ref: prRefSchema,
@@ -13,6 +14,8 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
+  // Reject cross-site requests before reading the body.
+  if (!isSameOrigin(req)) return fail(403, "cross_origin", "Cross-origin request refused.");
   const parsed = bodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return fail(400, "bad_request", "Invalid submit request.");
   const { ref, reviewId, event, body } = parsed.data;

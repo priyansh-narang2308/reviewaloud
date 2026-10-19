@@ -76,7 +76,7 @@ describe("review API wrappers", () => {
     const calls: { url: string; body: Record<string, unknown> }[] = [];
     const f = (async (url: RequestInfo | URL, init?: RequestInit) => {
       calls.push({ url: String(url), body: init?.body ? JSON.parse(String(init.body)) : {} });
-      return new Response(JSON.stringify({ id: 7, state: calls.length === 1 ? "PENDING" : "COMMENTED", html_url: "u", user: { login: "me" } }));
+      return new Response(JSON.stringify({ id: 7, state: calls.length === 1 ? "PENDING" : "COMMENTED", html_url: "https://github.com/o/r/pull/1#pullrequestreview-7", user: { login: "me" } }));
     }) as typeof fetch;
     const gh = createGitHubClient({ token: "t", fetch: f });
     const ref = { owner: "o", repo: "r", number: 1 };

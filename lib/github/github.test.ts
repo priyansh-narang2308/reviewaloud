@@ -132,6 +132,10 @@ describe("typed errors", () => {
     expect(err.message).toContain("Line could not be resolved");
   });
 
+  it("rejects non-GitHub URLs that would end up in links", async () => {
+    expect((await kindOf({ body: { ...prFixture, html_url: "javascript:alert(1)" } })).kind).toBe("invalid_response");
+  });
+
   it("rejects responses that do not match the schema", async () => {
     expect((await kindOf({ body: { number: "one" } })).kind).toBe("invalid_response");
   });

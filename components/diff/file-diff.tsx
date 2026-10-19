@@ -35,11 +35,19 @@ function useHighlight(file: WorkspaceFile, enabled: boolean) {
   useEffect(() => {
     if (!enabled || !file.parsed) return;
     let cancelled = false;
-    highlightLines(file.path, file.parsed.lines.map((l) => l.text))
-      .then((t) => !cancelled && setTokens(t))
-      .catch(() => {}); // plain text on failure
+    const lines = file.parsed.lines.map((l) => l.text);
+    // Highlighting runs in a Web Worker; still wait for idle so the worker's
+    // startup doesn't compete with first paint (plain text shows meanwhile).
+    const run = () =>
+      highlightLines(file.path, lines)
+        .then((t) => !cancelled && setTokens(t))
+        .catch(() => {}); // plain text on failure
+    const idle = typeof requestIdleCallback === "function";
+    const handle = idle ? requestIdleCallback(run, { timeout: 2500 }) : window.setTimeout(run, 300);
     return () => {
       cancelled = true;
+      if (idle) cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
     };
   }, [enabled, file]);
   return tokens;

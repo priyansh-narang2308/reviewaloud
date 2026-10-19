@@ -1,6 +1,9 @@
 import { z } from "zod";
 import type { GitHubClient } from "./client";
 
+/** href-safe GitHub web URL (rejects javascript:, other hosts). */
+export const githubUrl = z.string().regex(/^https:\/\/github\.com\//, "expected a github.com URL");
+
 const slug = /^[\w.-]+$/;
 
 export type PrRef = { owner: string; repo: string; number: number };
@@ -18,7 +21,7 @@ const pullRequestSchema = z.object({
   state: z.enum(["open", "closed"]),
   draft: z.boolean().optional().default(false),
   merged: z.boolean().optional().default(false),
-  html_url: z.string(),
+  html_url: githubUrl,
   body: z.string().nullable(),
   user: z.object({ login: z.string(), avatar_url: z.string() }).nullable(),
   head: z.object({ sha: z.string(), ref: z.string() }),

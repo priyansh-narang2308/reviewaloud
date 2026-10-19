@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { replyToReviewComment } from "@/lib/github/ledger-data";
 import { prRefSchema } from "@/lib/publish/plan";
 import { authorizeWrite, fail, githubFailure } from "@/lib/publish/server";
+import { isSameOrigin } from "@/lib/http/guard";
 
 const bodySchema = z.object({
   ref: prRefSchema,
@@ -12,6 +13,8 @@ const bodySchema = z.object({
 
 // Posts the reviewer-approved follow-up as a reply on the original thread.
 export async function POST(req: Request) {
+  // Reject cross-site requests before reading the body.
+  if (!isSameOrigin(req)) return fail(403, "cross_origin", "Cross-origin request refused.");
   const parsed = bodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return fail(400, "bad_request", "Invalid reply.");
   const { ref, commentId, body } = parsed.data;

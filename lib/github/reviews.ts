@@ -1,11 +1,11 @@
 import { z } from "zod";
 import type { GitHubClient } from "./client";
-import { prPath, type PrRef } from "./pr";
+import { githubUrl, prPath, type PrRef } from "./pr";
 
 const reviewSchema = z.object({
   id: z.number(),
   state: z.string(), // PENDING | COMMENTED | CHANGES_REQUESTED | APPROVED | DISMISSED
-  html_url: z.string(),
+  html_url: githubUrl,
   user: z.object({ login: z.string() }).nullable(),
   commit_id: z.string().nullable().optional(),
   submitted_at: z.string().nullable().optional(),

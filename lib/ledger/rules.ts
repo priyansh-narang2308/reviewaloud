@@ -51,6 +51,12 @@ export function signalNotes(p: PromiseItem, s: Signals): string[] {
 
 const norm = (s: string) => s.replace(/\s+/g, " ").trim();
 
+/** A quote made only of code comments (e.g. "// fixed as requested") claims a fix; it isn't one. */
+export function isCommentOnly(quote: string): boolean {
+  const lines = quote.split("\n").map((l) => l.trim()).filter(Boolean);
+  return lines.length > 0 && lines.every((l) => /^(\/\/|#|\/\*|\*|\*\/|<!--|--)/.test(l));
+}
+
 /**
  * Keeps only evidence whose quote really appears at the cited place, then
  * applies the hard rule: "addressed" needs at least one verified supporting
@@ -81,7 +87,10 @@ export function validateAiVerdict(
         verified = !!body && norm(body).includes(q);
       }
     }
-    if (!verified) {
+    // Repository text could try to talk the model into "addressed" (prompt
+    // injection) or a comment could just claim a fix. Comment-only quotes never
+    // count as support.
+    if (!verified || (e.kind === "code" && e.supports && isCommentOnly(e.quote))) {
       dropped++;
       continue;
     }
