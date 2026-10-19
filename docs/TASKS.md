@@ -12,8 +12,8 @@ Status: TODO · IN PROGRESS · BLOCKED · DONE. Full task definitions: [IMPLEMEN
 | 6   | GitHub client + PR fetch               | P0  | DONE | Typed errors, Link pagination (≤3000 files), Zod-validated responses, recorded-fixture tests. No ETag cache (deferred). Used injected fetch instead of MSW |
 | 7   | Unified diff parser                    | P0  | DONE | 18 tests on real sandbox patches + real git edge cases (no-EOF-newline, omitted counts, deleted file, blank context); strict count checks reject malformed patches |
 | 8   | Anchor mapper + validator              | P0  | DONE | 20 tests. UI anchors match all 6 live-verified GitHub placements; validates side/number/text; single-hunk range rule; re-maps drafts by unique text after head moves, else outdated (never guesses) |
-| 9   | Diff viewer                            | P0  | TODO    |                                                                                |
-| 10  | Workspace shell + file nav             | P0  | TODO    |                                                                                |
+| 9   | Diff viewer                            | P0  | DONE | Unified view, lazy Shiki (JS engine, 14 langs, highlight on scroll-in), click/shift-click selection, files >1500 lines collapsed behind "Load diff". Not yet measured: scroll smoothness on a 5k-line diff. Split view deferred (P2). Highlighting is approximate at hunk edges |
+| 10  | Workspace shell + file nav             | P0  | DONE | `/pr/[owner]/[repo]/[n]`, landing PR-URL form (+ no-JS `/open` fallback), file tree with +/−, `[ ]` files, `j/k` lines, Esc; loading skeleton; error states incl. rate limit (seen live) |
 | 11  | Review store                           | P0  | TODO    |                                                                                |
 | 12  | Capture panel (Pin & Speak)            | P0  | TODO    |                                                                                |
 | 13  | Comment cards                          | P0  | TODO    |                                                                                |
