@@ -125,3 +125,45 @@ a.btn:active {
 [data-radix-popper-content-wrapper] > * {
   transform-origin: var(--radix-dropdown-menu-content-transform-origin);
 }
+
+/* Landing mascot: peeks in once, sways slowly, perks up on hover. */
+@keyframes mascot-peek {
+  from { transform: translateY(55%) rotate(-8deg); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes mascot-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(3deg); }
+}
+@keyframes mascot-bubble-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+.mascot {
+  animation: mascot-peek 700ms var(--ease-out) 600ms both;
+}
+.mascot-body {
+  transform-origin: bottom left;
+  transition: transform 220ms var(--ease-out);
+}
+.mascot-sway {
+  transform-origin: bottom left;
+  animation: mascot-sway 6s ease-in-out 1.4s infinite;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mascot-body:hover { transform: translateY(-6px) rotate(4deg); }
+  .mascot-body:hover .mascot-sway { animation-play-state: paused; }
+}
+.mascot-body:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -6px;
+  border-radius: 16px;
+}
+.mascot-bubble {
+  transform-origin: bottom left;
+  animation: mascot-bubble-in 180ms var(--ease-out) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mascot, .mascot-sway, .mascot-bubble { animation: none; }
+  .mascot-body:hover { transform: none; }
+}

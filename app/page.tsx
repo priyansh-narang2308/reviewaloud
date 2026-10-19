@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { OpenPrForm } from "@/components/landing/open-pr-form";
 import { ProductPreview } from "@/components/landing/product-preview";
+import { Mascot } from "@/components/landing/mascot";
 import { parsePrInput } from "@/lib/github/url";
 import { SITE } from "@/lib/site";
 
@@ -160,8 +161,10 @@ export default function Home({ searchParams }: { searchParams: SearchParams }) {
         </section>
       </main>
 
+      <Mascot />
+
       <footer className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-5 py-6 text-xs text-faint">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-5 py-6 pl-[96px] text-xs text-faint sm:pl-[136px] lg:pl-5">
           <span>{SITE.name} · open source</span>
           <a href={SITE.repoUrl} target="_blank" rel="noreferrer" className="hover:text-muted">
             Source on GitHub
