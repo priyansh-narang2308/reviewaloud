@@ -26,18 +26,20 @@ test.describe("PR workspace (live sandbox PR #1)", () => {
   test("click pins a line; shift-click extends a range within a hunk", async ({ page }) => {
     const cart = page.locator("section[data-path='src/cart.ts']");
     await cart.locator("[data-idx='3']").click();
-    await expect(page.getByTestId("selection")).toContainText("src/cart.ts R17");
+    await expect(page.getByTestId("capture-anchor")).toContainText("src/cart.ts R17");
     await cart.locator("[data-idx='6']").click();
     await cart.locator("[data-idx='8']").click({ modifiers: ["Shift"] });
-    await expect(page.getByTestId("selection")).toContainText("R20–R22");
+    await expect(page.getByTestId("capture-anchor")).toContainText("R20–R22");
     await expect(cart.locator("[aria-selected='true']")).toHaveCount(3);
+    // Click moved focus to the capture field: first Esc returns to the diff, second clears the pin.
     await page.keyboard.press("Escape");
-    await expect(page.getByTestId("selection")).toHaveCount(0);
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("capture-anchor")).toHaveText("No line pinned");
   });
 
   test("deleted lines pin on the LEFT side", async ({ page }) => {
     await page.locator("section[data-path='src/cart.ts'] .diff-row[data-kind='del']").first().click();
-    await expect(page.getByTestId("selection")).toContainText("L20");
+    await expect(page.getByTestId("capture-anchor")).toContainText("L20");
   });
 
   test("a range across hunks is refused with an explanation", async ({ page }) => {
@@ -49,11 +51,11 @@ test.describe("PR workspace (live sandbox PR #1)", () => {
 
   test("j/k move the pinned line; [ and ] move between files", async ({ page }) => {
     await page.keyboard.press("j");
-    await expect(page.getByTestId("selection")).toContainText("src/auth.ts R9");
+    await expect(page.getByTestId("capture-anchor")).toContainText("src/auth.ts R9");
     await page.keyboard.press("j");
-    await expect(page.getByTestId("selection")).toContainText("R10");
+    await expect(page.getByTestId("capture-anchor")).toContainText("R10");
     await page.keyboard.press("k");
-    await expect(page.getByTestId("selection")).toContainText("R9");
+    await expect(page.getByTestId("capture-anchor")).toContainText("R9");
     await page.keyboard.press("]");
     await expect(page.getByRole("navigation", { name: "Changed files" }).locator("[aria-current='true']")).toContainText("cart.ts");
   });

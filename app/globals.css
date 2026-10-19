@@ -55,3 +55,4 @@ body {
 .diff-row[data-kind="del"] .diff-gutter { background: var(--del-gutter); }
 .diff-row[aria-selected="true"] { box-shadow: inset 3px 0 0 var(--accent); background-image: linear-gradient(var(--accent-soft), var(--accent-soft)); }
 .diff-file { content-visibility: auto; contain-intrinsic-size: auto 600px; }
+.diff-row[data-marked] .diff-gutter { box-shadow: inset -3px 0 0 var(--accent); }

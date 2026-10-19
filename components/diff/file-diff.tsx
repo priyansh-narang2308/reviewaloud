@@ -22,6 +22,8 @@ type Props = {
   fileIndex: number;
   /** Selected display-index range in this file, if any. */
   selected: { from: number; to: number } | null;
+  /** Display indices of lines with draft comments. */
+  marks?: ReadonlySet<number>;
   onSelect: (path: string, idx: number, extend: boolean) => void;
   githubUrl: string;
 };
@@ -54,7 +56,7 @@ function useInView<T extends Element>() {
   return [ref, seen] as const;
 }
 
-export const FileDiff = memo(function FileDiff({ file, fileIndex, selected, onSelect, githubUrl }: Props) {
+export const FileDiff = memo(function FileDiff({ file, fileIndex, selected, marks, onSelect, githubUrl }: Props) {
   const lineCount = file.parsed?.lines.length ?? 0;
   const [expanded, setExpanded] = useState(lineCount <= COLLAPSE_OVER);
   const [ref, inView] = useInView<HTMLElement>();
@@ -119,6 +121,7 @@ export const FileDiff = memo(function FileDiff({ file, fileIndex, selected, onSe
                   line={l}
                   tokens={tokens?.[l.idx]}
                   selected={!!selected && l.idx >= selected.from && l.idx <= selected.to}
+                  marked={!!marks?.has(l.idx)}
                   onSelect={(extend) => onSelect(file.path, l.idx, extend)}
                 />
               ))}
@@ -134,11 +137,13 @@ const Row = memo(function Row({
   line,
   tokens,
   selected,
+  marked,
   onSelect,
 }: {
   line: DiffLine;
   tokens: LineTokens | undefined;
   selected: boolean;
+  marked: boolean;
   onSelect: (extend: boolean) => void;
 }) {
   const sign = line.kind === "add" ? "+" : line.kind === "del" ? "−" : " ";
@@ -151,6 +156,7 @@ const Row = memo(function Row({
       data-kind={line.kind}
       data-idx={line.idx}
       aria-selected={selected}
+      data-marked={marked || undefined}
       className="diff-row group flex min-w-max cursor-pointer hover:brightness-125"
       onClick={(e) => onSelect(e.shiftKey)}
     >
@@ -158,6 +164,7 @@ const Row = memo(function Row({
         <span className="w-10 pr-2">{line.oldNo ?? ""}</span>
         <span className="w-10 pr-2">{line.newNo ?? ""}</span>
       </span>
+      {marked && <span className="sr-only">Has a draft comment.</span>}
       <span role="gridcell" className="w-5 shrink-0 select-none text-center text-faint">
         <button
           type="button"

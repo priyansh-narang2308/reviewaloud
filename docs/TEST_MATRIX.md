@@ -6,7 +6,7 @@ Results are recorded only after a run. "—" means not yet run.
 
 | Gate | Assumption                                                                  | Method                           | Result | Date |
 | ---- | --------------------------------------------------------------------------- | -------------------------------- | ------ | ---- |
-| G1   | Wispr inserts into our textarea; anchor persists                            | Task 4, 10 manual dictations     | —      |      |
+| G1   | Wispr inserts into our textarea; anchor persists                            | 10 manual dictations in the real workspace (`/pr/…/reviewaloud-sandbox/1`) | — (awaiting user run) |      |
 | G2   | GitHub accepts our anchors (add, del/LEFT, ctx, range, 2nd hunk, last line) | Task 5 live script, sandbox only | **PASS** 6/6 | 2026-10-19 |
 | G3   | Pending → submit works with GitHub App user token                           | Task 5 + Task 17                 | Partial: PASS with gh OAuth token; App token pending | 2026-10-19 |
 | G4   | Ledger flags a planted unresolved item without trusting agent summary       | Task 25, 4 cases                 | —      |      |
@@ -21,6 +21,8 @@ Results are recorded only after a run. "—" means not yet run.
 | Anchors | unit | `lib/diff/anchors.test.ts` | 20/20 pass |
 | PR URL parser | unit | `lib/github/url.test.ts` | 14/14 pass |
 | Selection | unit | `lib/workspace/selection.test.ts` | 4/4 pass |
+| Review store | unit | `lib/store/review-store.test.ts` | 10/10 pass |
+| Pin & Speak | e2e (simulated paste) | `e2e/pin-and-speak.spec.ts` | 5/5 pass |
 | Workspace + landing | e2e (live sandbox PR) | `e2e/workspace.spec.ts` | 9/9 pass |
 | Smoke      | e2e  | `e2e/smoke.spec.ts` | 1/1 pass |
 | Capture spike | e2e | `e2e/capture-spike.spec.ts` | 2/2 pass |
@@ -37,3 +39,4 @@ Not run yet. Will report confusion matrix and false-addressed rate exactly as me
 - 2026-10-19 · `pnpm test` → 23/23 (env + GitHub client/PR with recorded sandbox responses). `scripts/smoke-pr-fetch.ts` live, unauthenticated: sandbox#1 OK (4 files), cli/cli#14751 OK (2 files), sandbox#9999 → `not_found` (expected).
 - 2026-10-19 · Tasks 7–8: `pnpm test` → 61/61 (parser 18, anchors 20). Anchors produced from parsed real patches equal the six placements GitHub accepted live in Task 5. Typecheck + lint clean.
 - 2026-10-19 · Tasks 9–10: `pnpm test` 79/79; `pnpm test:e2e` 12/12 (run with a read token in env). Browser check: sandbox PR renders with GitHub's numbering (auth.ts L12–15 deleted, R12 added); shift-click gives `src/cart.ts R20–R22` (= live-verified range D). Found and fixed: (1) e2e raced hydration → `data-hydrated` marker; (2) form submit before hydration did a native GET → added `/open` no-JS fallback (tested with JS disabled); (3) `next build` failed on uncached `searchParams` with cacheComponents → moved into `<Suspense>`. Observed live: unauthenticated GitHub limit (60/h) exhausted during test runs; rate-limit error state rendered correctly. **Not measured yet:** 5k-line diff scroll performance.
+- 2026-10-19 · Tasks 11–12: `pnpm test` 89/89; `pnpm test:e2e` 17/17 (now using `GITHUB_PUBLIC_READ_TOKEN` from `.env.local`). Browser check: click on auth.ts R12 pins it and focuses the capture field.

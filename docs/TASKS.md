@@ -6,7 +6,7 @@ Status: TODO · IN PROGRESS · BLOCKED · DONE. Full task definitions: [IMPLEMEN
 | --- | -------------------------------------- | --- | ------- | ------------------------------------------------------------------------------ |
 | 1   | Scaffold repo                          | P0  | DONE    | Next 16.4.2, React 19.3, Tailwind 4, Zod 4, Vitest 5, Playwright 1.64          |
 | 2   | Architecture docs + env schema         | P0  | DONE    | All env vars optional at boot; features fail naming the missing key            |
-| 3   | Sandbox + GitHub App setup             | P0  | IN PROGRESS | Repos + sandbox PR #1 done. Remaining (you): GitHub App, public-read token, OpenRouter key |
+| 3   | Sandbox + GitHub App setup             | P0  | DONE | Repos, sandbox PR #1, GitHub App, public-read token configured (env:check). OpenRouter key due by Task 24 |
 | 4   | Wispr capture spike                    | P0  | IN PROGRESS | `/spike/capture` built; simulated-paste e2e passes. Remaining: your 10 real Wispr dictations (G1) |
 | 5   | GitHub write spike                     | P0  | DONE | G2 PASS (6/6 anchors). Pending hidden from others, 2nd pending → 422, submit + reply OK. G3 partial: tested with gh OAuth token; GitHub App token in Task 17. Found: GitHub accepts cross-hunk ranges and LEFT on context lines |
 | 6   | GitHub client + PR fetch               | P0  | DONE | Typed errors, Link pagination (≤3000 files), Zod-validated responses, recorded-fixture tests. No ETag cache (deferred). Used injected fetch instead of MSW |
@@ -14,8 +14,8 @@ Status: TODO · IN PROGRESS · BLOCKED · DONE. Full task definitions: [IMPLEMEN
 | 8   | Anchor mapper + validator              | P0  | DONE | 20 tests. UI anchors match all 6 live-verified GitHub placements; validates side/number/text; single-hunk range rule; re-maps drafts by unique text after head moves, else outdated (never guesses) |
 | 9   | Diff viewer                            | P0  | DONE | Unified view, lazy Shiki (JS engine, 14 langs, highlight on scroll-in), click/shift-click selection, files >1500 lines collapsed behind "Load diff". Not yet measured: scroll smoothness on a 5k-line diff. Split view deferred (P2). Highlighting is approximate at hunk edges |
 | 10  | Workspace shell + file nav             | P0  | DONE | `/pr/[owner]/[repo]/[n]`, landing PR-URL form (+ no-JS `/open` fallback), file tree with +/−, `[ ]` files, `j/k` lines, Esc; loading skeleton; error states incl. rate limit (seen live) |
-| 11  | Review store                           | P0  | TODO    |                                                                                |
-| 12  | Capture panel (Pin & Speak)            | P0  | TODO    |                                                                                |
+| 11  | Review store                           | P0  | DONE | Zod-validated, versioned localStorage store keyed per PR (deviation: not per head SHA, so drafts survive new commits; anchors carry their commit). Undo delete, corrupt data set aside, throwing storage handled, cross-tab reload |
+| 12  | Capture panel (Pin & Speak)            | P0  | IN PROGRESS | Docked capture panel in the real workspace: click pins + focuses field, paste → "Text received", ⌘↵ saves, Esc returns to diff, text-before-pin kept, typing fallback, draft markers. Simulated-paste e2e pass. Remaining: your real Wispr run (G1) |
 | 13  | Comment cards                          | P0  | TODO    |                                                                                |
 | 14  | Re-anchor + multi-line ranges          | P1  | TODO    |                                                                                |
 | 15  | Keyboard & speed pass                  | P1  | TODO    |                                                                                |
