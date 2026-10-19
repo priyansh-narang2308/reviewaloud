@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Workspace } from "@/components/workspace/workspace";
 import { WorkspaceError } from "@/components/workspace/workspace-error";
 import { loadWorkspace } from "@/lib/workspace/load";
@@ -21,6 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 }
 
 export default async function Page({ params }: { params: Promise<Params> }) {
+  // Per-request page (session cookie, live GitHub data). Marking it dynamic up
+  // front stops prerendering from reaching iron-session's clock reads.
+  await connection();
   const ref = toRef(await params);
   if (!ref) return <WorkspaceError kind="not_found" message="That isn't a valid pull request address." />;
   // Signed-in users can open private PRs they can access; others use the public read token.
