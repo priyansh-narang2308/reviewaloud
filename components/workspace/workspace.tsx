@@ -1,11 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { AuthControl } from "@/components/auth/auth-control";
 import { useViewer } from "@/components/auth/use-viewer";
 import { CapturePanel } from "@/components/capture/capture-panel";
 import { PublishDialog } from "@/components/publish/publish-dialog";
 import { LedgerView } from "@/components/ledger/ledger-view";
+import { type DemoData, DemoProvider, recordedLabel } from "@/components/demo/demo-context";
 import { useReviewStore } from "@/components/capture/use-review-store";
 import { type CardActions, CardActionsContext, type TidyState } from "@/components/cards/card-actions";
 import { DraftsList } from "@/components/cards/drafts-list";
@@ -24,7 +26,7 @@ const noopSubscribe = () => () => {};
 const isTyping = (t: EventTarget | null) =>
   t instanceof HTMLElement && (t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName));
 
-export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled: boolean }) {
+export function Workspace({ data, aiEnabled, demo }: { data: WorkspaceData; aiEnabled: boolean; demo?: DemoData }) {
   const { pr, files } = data;
   const [selection, setSelection] = useState<Selection | null>(null);
   const [currentFile, setCurrentFile] = useState(0);
@@ -37,9 +39,9 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
   const [toast, setToast] = useState<string | null>(null);
   const [publishOpen, setPublishOpen] = useState(false);
   const [tabChoice, setTabChoice] = useState<"review" | "ledger" | null>(null);
-  const [viewer, refreshViewer] = useViewer();
+  const [viewer, refreshViewer] = useViewer(!!demo);
   const captureRef = useRef<HTMLTextAreaElement>(null);
-  const [store, review] = useReviewStore(data.ref);
+  const [store, review] = useReviewStore(data.ref, demo ? "demo" : undefined);
   // Marks when event handlers are live (used by e2e tests to avoid racing hydration).
   const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
   const returnTo = `/pr/${data.ref.owner}/${data.ref.repo}/${data.ref.number}`;
@@ -226,6 +228,7 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
   const githubFilesUrl = `${pr.htmlUrl}/files`;
 
   return (
+    <DemoProvider value={demo ?? null}>
     <CardActionsContext.Provider value={actions}>
       <div className="flex min-h-screen flex-col" data-hydrated={hydrated || undefined}>
         <PrHeader
@@ -233,7 +236,13 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
           fileCount={files.length}
           right={
             <>
-              <AuthControl state={viewer} returnTo={returnTo} onSignedOut={refreshViewer} />
+              {demo ? (
+                <span data-testid="demo-pill" className="rounded-full border border-accent/50 bg-accent-soft px-2.5 py-0.5 text-xs text-accent">
+                  Demo · sample data
+                </span>
+              ) : (
+                <AuthControl state={viewer} returnTo={returnTo} onSignedOut={refreshViewer} />
+              )}
               <button
                 type="button"
                 data-testid="open-publish"
@@ -246,6 +255,21 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
             </>
           }
         />
+        {demo && (
+          <div role="note" data-testid="demo-banner" className="border-b border-accent/30 bg-accent-soft/60">
+            <p className="mx-auto max-w-[1600px] px-4 py-2 text-xs text-text lg:px-6">
+              <b>Demo, no login.</b> A snapshot of a real public{" "}
+              <a href={demo.source} target="_blank" rel="noreferrer" className="underline">
+                sandbox PR
+              </a>{" "}
+              with planted test cases. Dictate or type real comments; publishing is <b>simulated</b> and Promise Ledger results are a{" "}
+              <b>{recordedLabel(demo).toLowerCase()}</b>. Nothing is sent to GitHub or AI.{" "}
+              <Link href="/" className="font-medium text-accent underline-offset-2 hover:underline">
+                Use it on your own PRs →
+              </Link>
+            </p>
+          </div>
+        )}
         <nav aria-label="Workspace" className="border-b border-border bg-surface">
           <div className="mx-auto flex max-w-[1600px] gap-1 px-4 lg:px-6" role="tablist">
             {(
@@ -402,5 +426,6 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
         />
       </div>
     </CardActionsContext.Provider>
+    </DemoProvider>
   );
 }

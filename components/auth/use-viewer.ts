@@ -7,11 +7,14 @@ export type ViewerState =
   | { status: "loading" }
   | { status: "ready"; configured: boolean; viewer: Viewer | null; appSlug: string | null };
 
-/** Who is signed in. Fetched client-side so pages stay cacheable. */
-export function useViewer(): [ViewerState, () => void] {
-  const [state, setState] = useState<ViewerState>({ status: "loading" });
+const DEMO_VIEWER: ViewerState = { status: "ready", configured: true, viewer: { login: "you (demo)", avatarUrl: null }, appSlug: null };
+
+/** Who is signed in. Fetched client-side so pages stay cacheable. In the demo, a fixed sample viewer. */
+export function useViewer(demo = false): [ViewerState, () => void] {
+  const [state, setState] = useState<ViewerState>(demo ? DEMO_VIEWER : { status: "loading" });
   const [tick, setTick] = useState(0);
   useEffect(() => {
+    if (demo) return;
     let cancelled = false;
     fetch("/api/auth/me", { cache: "no-store" })
       .then((r) => r.json())
@@ -22,7 +25,7 @@ export function useViewer(): [ViewerState, () => void] {
     return () => {
       cancelled = true;
     };
-  }, [tick]);
+  }, [tick, demo]);
   return [state, () => setTick((t) => t + 1)];
 }
 

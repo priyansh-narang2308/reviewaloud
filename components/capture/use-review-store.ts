@@ -12,8 +12,8 @@ function browserStorage(): Storage | null {
   }
 }
 
-export function useReviewStore(ref: PrRef): [ReviewStore, ReturnType<ReviewStore["getSnapshot"]>] {
-  const key = storageKey(ref.owner, ref.repo, ref.number);
+export function useReviewStore(ref: PrRef, namespace?: string): [ReviewStore, ReturnType<ReviewStore["getSnapshot"]>] {
+  const key = storageKey(ref.owner, ref.repo, ref.number) + (namespace ? `:${namespace}` : "");
   const [store] = useState(() => createReviewStore(key, browserStorage()));
   const state = useSyncExternalStore(store.subscribe, store.getSnapshot, () => SERVER_SNAPSHOT);
 

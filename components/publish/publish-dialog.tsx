@@ -8,6 +8,7 @@ import type { PrRef } from "@/lib/github/pr";
 import { type DraftReviewRecord, publishedKey, readDraftRecord, writeDraftRecord } from "@/lib/store/published-store";
 import type { Card } from "@/lib/store/review-store";
 import { describeAnchor } from "@/lib/workspace/selection";
+import { useDemo } from "@/components/demo/demo-context";
 
 type ApiError = { code: string; message: string; installUrl?: string | null; reviewId?: number; htmlUrl?: string; outdated?: { cardId: string; reason: string }[]; moved?: { cardId: string; anchor: Anchor }[] };
 
@@ -45,6 +46,16 @@ const storage = () => {
   }
 };
 
+/** Demo: same flow, no network. Responses mirror the real API's shapes. */
+async function simulate(url: string, body: { comments?: { cardId: string }[] }, source: string) {
+  await new Promise((r) => setTimeout(r, 450));
+  if (url.endsWith("/create")) {
+    return { ok: true as const, json: { reviewId: 1, state: "PENDING", htmlUrl: source, commitId: "demo", cardIds: (body.comments ?? []).map((c) => c.cardId), moved: [] } };
+  }
+  if (url.endsWith("/submit")) return { ok: true as const, json: { state: "COMMENTED", htmlUrl: source, alreadySubmitted: false } };
+  return { ok: true as const, json: { ok: true } };
+}
+
 async function post(url: string, body: unknown): Promise<{ ok: true; json: Record<string, unknown> } | { ok: false; error: ApiError }> {
   try {
     const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -58,8 +69,10 @@ async function post(url: string, body: unknown): Promise<{ ok: true; json: Recor
 
 export function PublishDialog(props: Props) {
   const { open, onClose, prRef, cards, outdatedIds, viewer } = props;
+  const demo = useDemo();
+  const send = (url: string, body: Record<string, unknown>) => (demo ? simulate(url, body as { comments?: { cardId: string }[] }, demo.source) : post(url, body));
   const ref = useRef<HTMLDialogElement>(null);
-  const key = publishedKey(prRef.owner, prRef.repo, prRef.number);
+  const key = publishedKey(prRef.owner, prRef.repo, prRef.number) + (demo ? ":demo" : "");
   const [phase, setPhase] = useState<Phase>({ k: "preview" });
   const [summary, setSummary] = useState("");
   const [error, setError] = useState<ApiError | null>(null);
@@ -99,7 +112,7 @@ export function PublishDialog(props: Props) {
   async function createDraft(confirmMoved = false) {
     setError(null);
     setPhase({ k: "working", label: "Creating draft review on GitHub…" });
-    const r = await post("/api/gh/review/create", {
+    const r = await send("/api/gh/review/create", {
       ref: prRef,
       summary,
       confirmMoved,
@@ -130,7 +143,7 @@ export function PublishDialog(props: Props) {
   async function submit(record: DraftReviewRecord, event: "COMMENT" | "REQUEST_CHANGES") {
     setError(null);
     setPhase({ k: "working", label: "Submitting review…" });
-    const r = await post("/api/gh/review/submit", { ref: prRef, reviewId: record.reviewId, event, body: summary || undefined });
+    const r = await send("/api/gh/review/submit", { ref: prRef, reviewId: record.reviewId, event, body: summary || undefined });
     if (!r.ok) {
       setError(r.error);
       return setPhase({ k: "draft", record });
@@ -143,7 +156,7 @@ export function PublishDialog(props: Props) {
   async function discard(reviewId: number) {
     setError(null);
     setPhase({ k: "working", label: "Discarding the draft on GitHub…" });
-    const r = await post("/api/gh/review/discard", { ref: prRef, reviewId });
+    const r = await send("/api/gh/review/discard", { ref: prRef, reviewId });
     if (!r.ok) {
       setError(r.error);
       const rec = readDraftRecord(storage(), key);
@@ -263,11 +276,20 @@ export function PublishDialog(props: Props) {
 
           {(phase.k === "draft" || phase.k === "confirm") && (
             <div data-testid="publish-draft">
-              <p className="mb-1 font-medium">Draft review created on GitHub · {phase.record.cardIds.length} comment(s)</p>
-              <p className="mb-2 text-muted">It&apos;s only visible to you until you submit it.</p>
-              <a href={phase.record.htmlUrl} target="_blank" rel="noreferrer" className="text-accent underline">
-                Check it on GitHub ↗
-              </a>
+              {demo ? (
+                <>
+                  <p className="mb-1 font-medium">Simulated draft review · {phase.record.cardIds.length} comment(s)</p>
+                  <p className="mb-2 text-muted">Demo: nothing was sent to GitHub. In the live app this creates a pending review only you can see.</p>
+                </>
+              ) : (
+                <>
+                  <p className="mb-1 font-medium">Draft review created on GitHub · {phase.record.cardIds.length} comment(s)</p>
+                  <p className="mb-2 text-muted">It&apos;s only visible to you until you submit it.</p>
+                  <a href={phase.record.htmlUrl} target="_blank" rel="noreferrer" className="text-accent underline">
+                    Check it on GitHub ↗
+                  </a>
+                </>
+              )}
               {phase.k === "confirm" && (
                 <p role="alert" data-testid="publish-confirm" className="mt-4 rounded-lg border border-accent/50 bg-accent-soft p-3">
                   This publishes {phase.record.cardIds.length} comment(s) on <b>{props.repoLabel}#{prRef.number}</b> as{" "}
@@ -280,10 +302,14 @@ export function PublishDialog(props: Props) {
           {phase.k === "submitted" && (
             <div data-testid="publish-submitted">
               <p className="mb-2 font-medium">
-                {phase.alreadySubmitted ? "This review was already submitted." : `Review submitted with ${phase.count} comment(s).`}
+                {demo
+                  ? `Simulated: review with ${phase.count} comment(s) would now be public on GitHub.`
+                  : phase.alreadySubmitted
+                    ? "This review was already submitted."
+                    : `Review submitted with ${phase.count} comment(s).`}
               </p>
               <a href={phase.htmlUrl} target="_blank" rel="noreferrer" className="text-accent underline">
-                Open the review on GitHub ↗
+                {demo ? "See the real sandbox PR (reviewed with ReviewAloud) ↗" : "Open the review on GitHub ↗"}
               </a>
             </div>
           )}
@@ -301,14 +327,14 @@ export function PublishDialog(props: Props) {
           </button>
           <span className="ml-auto flex flex-wrap gap-2">
             {(phase.k === "preview" || phase.k === "working") &&
-              (signedIn ? (
+              (signedIn || demo ? (
                 <button
                   type="button"
                   disabled={busy || publishable.length === 0}
                   onClick={() => once(() => createDraft(false))}
                   className="rounded-lg bg-accent px-4 py-1.5 font-medium text-black disabled:opacity-40"
                 >
-                  Create draft on GitHub
+                  {demo ? "Create draft (simulated)" : "Create draft on GitHub"}
                 </button>
               ) : (
                 <a href={loginHref(props.returnTo)} className="rounded-lg bg-accent px-4 py-1.5 font-medium text-black">

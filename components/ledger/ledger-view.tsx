@@ -7,6 +7,7 @@ import { aggregate, followThrough } from "@/lib/ledger/score";
 import type { LedgerStatus, PromiseItem, Verdict } from "@/lib/ledger/types";
 import { ledgerKey, readHistory, readLedger, upsertHistory, writeLedger } from "@/lib/store/ledger-store";
 import { PromiseRow } from "./promise-row";
+import { useDemo } from "@/components/demo/demo-context";
 import { STATUS_META } from "./status";
 
 type ListData = { headSha: string; prAuthor: string | null; isPrivate: boolean; reviewers: string[]; items: PromiseItem[] };
@@ -23,8 +24,9 @@ async function getJson(url: string) {
 }
 
 export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; prUrl: string; viewer: ViewerState; returnTo: string }) {
-  const key = ledgerKey(prRef.owner, prRef.repo, prRef.number);
-  const [list, setList] = useState<ListState>({ k: "loading" });
+  const demo = useDemo();
+  const key = ledgerKey(prRef.owner, prRef.repo, prRef.number) + (demo ? ":demo" : "");
+  const [list, setList] = useState<ListState>(demo ? { k: "ready", data: { ...demo.ledger, isPrivate: false } } : { k: "loading" });
   const [reviewer, setReviewer] = useState<string>("");
   const [file, setFile] = useState(() => readLedger(key));
   const [checking, setChecking] = useState<ReadonlySet<number>>(new Set());
@@ -36,10 +38,11 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
   const [tick, setTick] = useState(0);
   const queueRunning = useRef(false);
 
-  const signedIn = viewer.status === "ready" && !!viewer.viewer;
+  const signedIn = !!demo || (viewer.status === "ready" && !!viewer.viewer);
   const q = `owner=${prRef.owner}&repo=${prRef.repo}&number=${prRef.number}`;
 
   useEffect(() => {
+    if (demo) return;
     let cancelled = false;
     getJson(`/api/ledger/list?${q}`)
       .then((data: ListData) => {
@@ -51,7 +54,7 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
     return () => {
       cancelled = true;
     };
-  }, [q, tick]);
+  }, [q, tick, demo]);
 
   // Default the reviewer filter to the signed-in user when they reviewed this PR.
   const me = viewer.status === "ready" ? viewer.viewer?.login : undefined;
@@ -59,7 +62,7 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
 
   const headSha = list.k === "ready" ? list.data.headSha : null;
   useEffect(() => {
-    if (!headSha) return;
+    if (!headSha || demo) return;
     const t = setInterval(async () => {
       try {
         const j = await getJson(`/api/ledger/head?${q}`);
@@ -69,7 +72,7 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
       }
     }, POLL_MS);
     return () => clearInterval(t);
-  }, [q, headSha]);
+  }, [q, headSha, demo]);
 
   const items = useMemo(
     () => (list.k === "ready" ? list.data.items.filter((i) => !effectiveReviewer || i.author === effectiveReviewer) : []),
@@ -90,9 +93,9 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
   // Record this PR's follow-through for the cross-PR score.
   const prAuthor = list.k === "ready" ? list.data.prAuthor : null;
   useEffect(() => {
-    if (list.k !== "ready" || !score.total || score.unchecked === score.total) return;
+    if (demo || list.k !== "ready" || !score.total || score.unchecked === score.total) return;
     upsertHistory({ pr: `${prRef.owner}/${prRef.repo}#${prRef.number}`, author: prAuthor, checkedAt: now(), ...score });
-  }, [score, list.k, prAuthor, prRef]);
+  }, [score, list.k, prAuthor, prRef, demo]);
 
   const verify = useCallback(
     async (commentId: number): Promise<"ok" | "stop"> => {
@@ -103,6 +106,19 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
         return n;
       });
       try {
+        if (demo) {
+          // Replay the recorded live verdict (labelled in the UI), no AI call.
+          await new Promise((r) => setTimeout(r, 350));
+          const recorded = demo.verdicts[String(commentId)];
+          if (recorded) {
+            setFile((f) => {
+              const next = { ...f, verdicts: { ...f.verdicts, [commentId]: recorded } };
+              writeLedger(key, next);
+              return next;
+            });
+          }
+          return "ok";
+        }
         const res = await fetch("/api/ledger/verify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -134,7 +150,7 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
         });
       }
     },
-    [prRef, key],
+    [prRef, key, demo],
   );
 
   // One at a time: free models allow ~20 requests/min and few per day.
@@ -172,6 +188,10 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
 
   const onReply = useCallback(
     async (commentId: number, body: string) => {
+      if (demo) {
+        await new Promise((r) => setTimeout(r, 400));
+        return { ok: true, url: demo.source } as const;
+      }
       try {
         const res = await fetch("/api/gh/reply", {
           method: "POST",
@@ -184,7 +204,7 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
         return { ok: false, message: "Couldn't reach the server." } as const;
       }
     },
-    [prRef],
+    [prRef, demo],
   );
 
   if (list.k === "loading") return <p className="p-6 text-sm text-muted">Loading review requests…</p>;
@@ -258,11 +278,12 @@ export function LedgerView({ prRef, prUrl, viewer, returnTo }: { prRef: PrRef; p
               <button
                 type="button"
                 data-testid="check-all"
+                title={demo ? "Replays a recorded live run; no AI call" : undefined}
                 disabled={!pending.length || checking.size > 0}
                 onClick={() => runQueue(pending)}
                 className="rounded-lg bg-accent px-4 py-1.5 text-sm font-medium text-black disabled:opacity-40"
               >
-                {checking.size ? "Checking…" : pending.length ? `Check ${pending.length} request${pending.length === 1 ? "" : "s"}` : "All checked"}
+                {checking.size ? "Checking…" : pending.length ? `${demo ? "Replay check of" : "Check"} ${pending.length} request${pending.length === 1 ? "" : "s"}` : "All checked"}
               </button>
             ) : (
               <a href={loginHref(returnTo)} className="rounded-lg bg-accent px-4 py-1.5 text-sm font-medium text-black">

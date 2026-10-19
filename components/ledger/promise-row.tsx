@@ -6,6 +6,7 @@ import { type AgentMention, agentPrompt, followUpInstruction } from "@/lib/ledge
 import { STATUSES, type LedgerStatus, type PromiseItem, type Verdict } from "@/lib/ledger/types";
 import type { Override } from "@/lib/store/ledger-store";
 import { STATUS_META, StatusChip } from "./status";
+import { recordedLabel, useDemo } from "@/components/demo/demo-context";
 
 type Props = {
   item: PromiseItem;
@@ -31,6 +32,7 @@ export function PromiseRow(p: Props) {
   const stale = !!v && v.headSha !== p.headSha;
   const needsFollowUp = status === "unresolved" || status === "needs_human" || status === "reply_needed";
   const [open, setOpen] = useState(false);
+  const demo = useDemo();
 
   return (
     <li data-testid="promise" data-comment-id={item.commentId} className="rounded-xl border border-border bg-surface p-4">
@@ -98,6 +100,7 @@ export function PromiseRow(p: Props) {
           )}
           <details className="text-xs text-muted">
             <summary>
+              {demo && <span className="mr-1 rounded border border-accent/40 px-1 text-accent">{recordedLabel(demo)}</span>}
               How this was decided · {v.decidedBy === "rules" ? "deterministic rules (no AI)" : `AI (${v.model})`} at {v.headSha.slice(0, 7)}
             </summary>
             <ul className="mt-1 list-inside list-disc space-y-0.5">
@@ -170,6 +173,7 @@ function FollowUp({
   const [confirm, setConfirm] = useState(false);
   const [state, setState] = useState<{ k: "idle" } | { k: "posting" } | { k: "posted"; url: string } | { k: "error"; message: string }>({ k: "idle" });
   const [copied, setCopied] = useState(false);
+  const demo = useDemo();
 
   const pickMention = (m: AgentMention) => {
     setMention(m);
@@ -221,11 +225,11 @@ function FollowUp({
         </button>
         {state.k === "posted" ? (
           <a href={state.url} target="_blank" rel="noreferrer" data-testid="reply-posted" className="text-xs text-accent underline">
-            Reply posted on GitHub ↗
+            {demo ? "Simulated: reply not sent (demo) · see the real sandbox PR ↗" : "Reply posted on GitHub ↗"}
           </a>
         ) : confirm ? (
           <>
-            <span className="text-xs">Post this publicly on the thread?</span>
+            <span className="text-xs">{demo ? "Demo: this is simulated, nothing is posted." : "Post this publicly on the thread?"}</span>
             <button
               type="button"
               disabled={state.k === "posting"}

@@ -74,3 +74,54 @@ select:disabled {
 }
 
 @keyframes ra-pop { from { opacity: 0; transform: scale(0.96) translateY(-2px); } to { opacity: 1; transform: none; } }
+
+/* Motion tokens (custom curves; built-in easings are too weak). */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* Press feedback on every button: the UI confirms it heard you. */
+button,
+a.btn {
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    opacity 150ms ease;
+}
+button:not(:disabled):active,
+a.btn:active {
+  transform: scale(0.97);
+}
+
+/* Landing entrance: rare, first-visit only, so a short stagger is fine. */
+@keyframes ra-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: ra-rise 520ms var(--ease-out) both;
+}
+.rise-1 { animation-delay: 40ms; }
+.rise-2 { animation-delay: 100ms; }
+.rise-3 { animation-delay: 160ms; }
+.rise-4 { animation-delay: 220ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; }
+  button:not(:disabled):active,
+  a.btn:active { transform: none; }
+}
+
+/* Popovers scale from their trigger. */
+[data-radix-popper-content-wrapper] > * {
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+}

@@ -31,6 +31,7 @@ Results are recorded only after a run. "—" means not yet run.
 | Ledger logic (mapping, rules, evidence validation, score, follow-up) | unit | `lib/ledger/ledger.test.ts` | 19/19 pass |
 | Promise Ledger UI (API mocked) | e2e | `e2e/ledger.spec.ts` | 6/6 pass (3 consecutive runs) |
 | Ledger vs real GitHub + OpenRouter | live script | `scripts/live-ledger-check.ts` | 5/5 planted (G4) |
+| Demo flow (no network) + landing | e2e | `e2e/demo.spec.ts` | 2/2 pass |
 | Workspace + landing | e2e (live sandbox PR) | `e2e/workspace.spec.ts` | 9/9 pass |
 | Smoke      | e2e  | `e2e/smoke.spec.ts` | 1/1 pass |
 | Capture spike | e2e | `e2e/capture-spike.spec.ts` | 2/2 pass |
@@ -57,3 +58,5 @@ Not run yet. Will report confusion matrix and false-addressed rate exactly as me
 - 2026-10-20 · G4 live (sandbox PR #2, planted, ground truth in PR description; misleading commit "Address all review comments"): discount fix → addressed (2 verified quotes); empty-orders guard (only a comment added) → unresolved, "missing: if (orders.length === 0) return 0"; question → reply_needed; rounding moved to format.ts (other file) → first run HTTP 502 "Model output was not JSON" on all models, after tolerant JSON extraction + maxTokens 1600 → addressed with format.ts evidence; quantity-only validation → unresolved "missing: unitPrice > 0". Latencies 16–31 s per check on free models. n=5 planted; not a benchmark.
 - 2026-10-20 · Bug found by unit test: GitHub's per-comment `diff_hunk` is truncated at the commented line, so the strict parser rejected it and LEFT-comment anchors were lost → `parsePatch(…, { allowTruncated: true })` for comment hunks only. Unit 130/130.
 - 2026-10-20 · Ledger UI: unit 130/130, e2e 43/43, build OK. Found + fixed: e2e flake (asserted call count before the queue finished). Visual check via Playwright screenshot (mocked verdicts). **Not yet done in a real browser session:** a live Check all + Reply from the UI (user to run on sandbox PR #2).
+- 2026-10-20 · Demo fixture recorded (`fixtures/demo/sandbox-pr-2.json`) from a fresh live run: 2 addressed, 3 unresolved. **Run-to-run variance observed:** the unanswered question was "reply_needed" on 2026-10-19 and "unresolved" on this run (same code). Neither is a false-addressed; the demo shows the recorded output unedited.
+- 2026-10-20 · Tasks 33–34: unit 130/130, e2e 45/45, build OK (`/demo` static). Found + fixed: landing preview overflowed at 1280 and 375 px (grid min-content) → `minmax(0,…)` + `min-w-0`. Dev-server stale-module issue seen again (hydration mismatch on /demo until restart); not reproducible after restart.

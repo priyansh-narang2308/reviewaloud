@@ -33,7 +33,7 @@ export function TypePicker({ value, onChange }: { value: CommentType | null; onC
         <Menu.Content
           align="start"
           sideOffset={6}
-          className="z-50 min-w-[220px] origin-[var(--radix-dropdown-menu-content-transform-origin)] rounded-xl border border-border-strong bg-surface-2/95 p-1 shadow-2xl shadow-black/50 backdrop-blur data-[state=closed]:animate-out data-[state=open]:animate-[ra-pop_120ms_ease-out]"
+          className="z-50 min-w-[220px] origin-[var(--radix-dropdown-menu-content-transform-origin)] rounded-xl border border-border-strong bg-surface-2/95 p-1 shadow-2xl shadow-black/50 backdrop-blur data-[state=open]:animate-[ra-pop_150ms_var(--ease-out)]"
         >
           <Menu.RadioGroup value={value ?? ""} onValueChange={(v) => onChange((v || null) as CommentType | null)}>
             {COMMENT_TYPES.map((t) => (

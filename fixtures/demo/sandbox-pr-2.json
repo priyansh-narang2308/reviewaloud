@@ -1,0 +1,309 @@
+{
+  "recordedAt": "2026-10-19T20:33:36.634Z",
+  "source": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/pull/2",
+  "note": "Snapshot of a public sandbox PR with planted test cases. Verdicts are the recorded output of one live Promise Ledger run.",
+  "ref": {
+    "owner": "priyansh-narang2308",
+    "repo": "reviewaloud-sandbox",
+    "number": 2
+  },
+  "pr": {
+    "number": 2,
+    "title": "Order history helpers",
+    "state": "open",
+    "draft": false,
+    "merged": false,
+    "htmlUrl": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/pull/2",
+    "body": "**Test fixture PR #2 (deliberate, Promise Ledger G4).** Five review comments are posted on the first commit. A follow-up commit titled \"Address all review comments\" is then pushed. **Planted ground truth:** it truly fixes 2 (discount in orderTotal; rounding moved into formatPrice in another file), leaves 1 cosmetically touched but unfixed (empty-orders guard), partially fixes 1 (validates quantity but not price), and leaves 1 question unanswered (sort order).",
+    "author": {
+      "login": "priyansh-narang2308",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/145008344?v=4"
+    },
+    "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+    "headRef": "feature/order-history",
+    "baseSha": "aebf19101661bc3611e5ac724bf78f1cb86a099e",
+    "baseRef": "main",
+    "isPrivate": false,
+    "repoFullName": "priyansh-narang2308/reviewaloud-sandbox",
+    "changedFiles": 3,
+    "additions": 29,
+    "deletions": 1
+  },
+  "files": [
+    {
+      "path": ".DS_Store",
+      "status": "added",
+      "additions": 0,
+      "deletions": 0,
+      "patch": null,
+      "previousPath": null
+    },
+    {
+      "path": "src/format.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -1,5 +1,5 @@\n export function formatPrice(amount: number): string {\n-  return \"Rs \" + amount.toFixed(2);\n+  return \"Rs \" + (Math.round(amount * 100) / 100).toFixed(2);\n }\n \n export function formatQuantity(q: number): string {",
+      "previousPath": null
+    },
+    {
+      "path": "src/orders.ts",
+      "status": "added",
+      "additions": 28,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,28 @@\n+import { type Cart, discountRate, subtotal } from \"./cart\";\n+\n+export type Order = { id: string; cart: Cart; placedAt: string };\n+\n+export function orderTotal(order: Order): number {\n+  const base = subtotal(order.cart);\n+  return base - base * discountRate(order.cart.discountCode);\n+}\n+\n+export function averageOrderValue(orders: Order[]): number {\n+  // Average value across all orders.\n+  const sum = orders.reduce((n, o) => n + orderTotal(o), 0);\n+  return sum / orders.length;\n+}\n+\n+export function recentOrders(orders: Order[]): Order[] {\n+  return [...orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt));\n+}\n+\n+export function roundedTotal(order: Order): number {\n+  return orderTotal(order);\n+}\n+\n+export function addLine(order: Order, quantity: number, unitPrice: number): Order {\n+  if (quantity <= 0) throw new Error(\"Quantity must be positive\");\n+  order.cart.items.push({ sku: `line-${order.cart.items.length}`, name: \"custom\", quantity, unitPrice });\n+  return order;\n+}",
+      "previousPath": null
+    }
+  ],
+  "ledger": {
+    "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+    "prAuthor": "priyansh-narang2308",
+    "reviewers": [
+      "priyansh-narang2308"
+    ],
+    "items": [
+      {
+        "commentId": 4316905916,
+        "author": "priyansh-narang2308",
+        "body": "**Blocking:** orderTotal ignores the cart's discount code. It should apply discountRate the same way total() does in cart.ts.",
+        "path": "src/orders.ts",
+        "side": "RIGHT",
+        "originalLine": 6,
+        "originalCommit": "219485230efaeca79f7c2aa24c597142417eaf4c",
+        "diffHunk": "@@ -0,0 +1,25 @@\n+import { type Cart, discountRate, subtotal } from \"./cart\";\n+\n+export type Order = { id: string; cart: Cart; placedAt: string };\n+\n+export function orderTotal(order: Order): number {\n+  return subtotal(order.cart);",
+        "createdAt": "2026-10-19T17:39:35Z",
+        "htmlUrl": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/pull/2#discussion_r4316905916",
+        "isResolved": false,
+        "isOutdated": true,
+        "replies": []
+      },
+      {
+        "commentId": 4316905924,
+        "author": "priyansh-narang2308",
+        "body": "**Blocking:** This divides by zero when there are no orders. Guard the empty array and return 0.",
+        "path": "src/orders.ts",
+        "side": "RIGHT",
+        "originalLine": 11,
+        "originalCommit": "219485230efaeca79f7c2aa24c597142417eaf4c",
+        "diffHunk": "@@ -0,0 +1,25 @@\n+import { type Cart, discountRate, subtotal } from \"./cart\";\n+\n+export type Order = { id: string; cart: Cart; placedAt: string };\n+\n+export function orderTotal(order: Order): number {\n+  return subtotal(order.cart);\n+}\n+\n+export function averageOrderValue(orders: Order[]): number {\n+  const sum = orders.reduce((n, o) => n + orderTotal(o), 0);\n+  return sum / orders.length;",
+        "createdAt": "2026-10-19T17:39:35Z",
+        "htmlUrl": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/pull/2#discussion_r4316905924",
+        "isResolved": false,
+        "isOutdated": false,
+        "replies": []
+      },
+      {
+        "commentId": 4316905936,
+        "author": "priyansh-narang2308",
+        "body": "**Question:** Why sort newest first here? The history screen shows oldest first.",
+        "path": "src/orders.ts",
+        "side": "RIGHT",
+        "originalLine": 15,
+        "originalCommit": "219485230efaeca79f7c2aa24c597142417eaf4c",
+        "diffHunk": "@@ -0,0 +1,25 @@\n+import { type Cart, discountRate, subtotal } from \"./cart\";\n+\n+export type Order = { id: string; cart: Cart; placedAt: string };\n+\n+export function orderTotal(order: Order): number {\n+  return subtotal(order.cart);\n+}\n+\n+export function averageOrderValue(orders: Order[]): number {\n+  const sum = orders.reduce((n, o) => n + orderTotal(o), 0);\n+  return sum / orders.length;\n+}\n+\n+export function recentOrders(orders: Order[]): Order[] {\n+  return [...orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt));",
+        "createdAt": "2026-10-19T17:39:35Z",
+        "htmlUrl": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/pull/2#discussion_r4316905936",
+        "isResolved": false,
+        "isOutdated": false,
+        "replies": []
+      },
+      {
+        "commentId": 4316905938,
+        "author": "priyansh-narang2308",
+        "body": "**Suggestion:** Rounding belongs in formatPrice, not in the order logic. Move it there and return the raw total here.",
+        "path": "src/orders.ts",
+        "side": "RIGHT",
+        "originalLine": 19,
+        "originalCommit": "219485230efaeca79f7c2aa24c597142417eaf4c",
+        "diffHunk": "@@ -0,0 +1,25 @@\n+import { type Cart, discountRate, subtotal } from \"./cart\";\n+\n+export type Order = { id: string; cart: Cart; placedAt: string };\n+\n+export function orderTotal(order: Order): number {\n+  return subtotal(order.cart);\n+}\n+\n+export function averageOrderValue(orders: Order[]): number {\n+  const sum = orders.reduce((n, o) => n + orderTotal(o), 0);\n+  return sum / orders.length;\n+}\n+\n+export function recentOrders(orders: Order[]): Order[] {\n+  return [...orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt));\n+}\n+\n+export function roundedTotal(order: Order): number {\n+  return Math.round(orderTotal(order) * 100) / 100;",
+        "createdAt": "2026-10-19T17:39:35Z",
+        "htmlUrl": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/pull/2#discussion_r4316905938",
+        "isResolved": false,
+        "isOutdated": true,
+        "replies": []
+      },
+      {
+        "commentId": 4316905950,
+        "author": "priyansh-narang2308",
+        "body": "**Blocking:** Validate that both quantity and unitPrice are positive before adding the line.",
+        "path": "src/orders.ts",
+        "side": "RIGHT",
+        "originalLine": 23,
+        "originalCommit": "219485230efaeca79f7c2aa24c597142417eaf4c",
+        "diffHunk": "@@ -0,0 +1,25 @@\n+import { type Cart, discountRate, subtotal } from \"./cart\";\n+\n+export type Order = { id: string; cart: Cart; placedAt: string };\n+\n+export function orderTotal(order: Order): number {\n+  return subtotal(order.cart);\n+}\n+\n+export function averageOrderValue(orders: Order[]): number {\n+  const sum = orders.reduce((n, o) => n + orderTotal(o), 0);\n+  return sum / orders.length;\n+}\n+\n+export function recentOrders(orders: Order[]): Order[] {\n+  return [...orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt));\n+}\n+\n+export function roundedTotal(order: Order): number {\n+  return Math.round(orderTotal(order) * 100) / 100;\n+}\n+\n+export function addLine(order: Order, quantity: number, unitPrice: number): Order {\n+  order.cart.items.push({ sku: `line-${order.cart.items.length}`, name: \"custom\", quantity, unitPrice });",
+        "createdAt": "2026-10-19T17:39:35Z",
+        "htmlUrl": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/pull/2#discussion_r4316905950",
+        "isResolved": false,
+        "isOutdated": false,
+        "replies": []
+      }
+    ]
+  },
+  "verdicts": {
+    "4316905916": {
+      "commentId": 4316905916,
+      "notes": [
+        "1 commit(s) since the comment",
+        "The commented lines were changed",
+        "The commented line was removed",
+        "Other files changed: src/format.ts",
+        "No CI results on the latest commit"
+      ],
+      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+      "checkedAt": 1792441924182,
+      "droppedEvidence": 0,
+      "status": "addressed",
+      "intent": "change_request",
+      "rationale": "The orderTotal function now calculates base = subtotal(order.cart) and returns base - base * discountRate(order.cart.discountCode), which applies the discount rate in the same manner as total() in cart.ts.",
+      "whatIsMissing": null,
+      "evidence": [
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 6,
+          "endLine": 6,
+          "quote": "  const base = subtotal(order.cart);",
+          "supports": true,
+          "verified": true
+        },
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 7,
+          "endLine": 7,
+          "quote": "  return base - base * discountRate(order.cart.discountCode);",
+          "supports": true,
+          "verified": true
+        }
+      ],
+      "decidedBy": "ai",
+      "model": "nvidia/nemotron-3-super-120b-a12b:free"
+    },
+    "4316905924": {
+      "commentId": 4316905924,
+      "notes": [
+        "1 commit(s) since the comment",
+        "The commented lines were changed",
+        "Other files changed: src/format.ts",
+        "No CI results on the latest commit"
+      ],
+      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+      "checkedAt": 1792441955821,
+      "droppedEvidence": 0,
+      "status": "unresolved",
+      "intent": "change_request",
+      "rationale": "The averageOrderValue function still divides by orders.length without checking for empty array, so it would produce NaN (or Infinity) when there are no orders, contrary to the request to guard the empty array and return 0.",
+      "whatIsMissing": "A guard such as if (orders.length === 0) return 0; before the division.",
+      "evidence": [
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 10,
+          "endLine": 14,
+          "quote": "export function averageOrderValue(orders: Order[]): number {\n  // Average value across all orders.\n  const sum = orders.reduce((n, o) => n + orderTotal(o), 0);\n  return sum / orders.length;\n}",
+          "supports": false,
+          "verified": true
+        }
+      ],
+      "decidedBy": "ai",
+      "model": "nvidia/nemotron-3-super-120b-a12b:free"
+    },
+    "4316905936": {
+      "commentId": 4316905936,
+      "notes": [
+        "1 commit(s) since the comment",
+        "The commented lines were not changed",
+        "Other files changed: src/format.ts",
+        "No CI results on the latest commit"
+      ],
+      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+      "checkedAt": 1792441973238,
+      "droppedEvidence": 0,
+      "status": "unresolved",
+      "intent": "question",
+      "rationale": "The question about sorting order remains unanswered; the code still sorts newest first and there is no reply in the provided data.",
+      "whatIsMissing": "A reply explaining the sorting choice or a code change to align with the history screen.",
+      "evidence": [
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 17,
+          "endLine": 17,
+          "quote": "return [...orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt));",
+          "supports": false,
+          "verified": true
+        }
+      ],
+      "decidedBy": "ai",
+      "model": "nvidia/nemotron-3-super-120b-a12b:free"
+    },
+    "4316905938": {
+      "commentId": 4316905938,
+      "notes": [
+        "1 commit(s) since the comment",
+        "The commented lines were changed",
+        "The commented line was removed",
+        "Other files changed: src/format.ts",
+        "No CI results on the latest commit"
+      ],
+      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+      "checkedAt": 1792441990036,
+      "droppedEvidence": 0,
+      "status": "addressed",
+      "intent": "change_request",
+      "rationale": "The rounding logic was moved from roundedTotal to formatPrice, and roundedTotal now returns the raw total as requested.",
+      "whatIsMissing": null,
+      "evidence": [
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 21,
+          "endLine": 21,
+          "quote": "return orderTotal(order);",
+          "supports": true,
+          "verified": true
+        },
+        {
+          "kind": "code",
+          "path": "src/format.ts",
+          "startLine": 2,
+          "endLine": 2,
+          "quote": "  return \"Rs \" + (Math.round(amount * 100) / 100).toFixed(2);",
+          "supports": true,
+          "verified": true
+        }
+      ],
+      "decidedBy": "ai",
+      "model": "nvidia/nemotron-3-super-120b-a12b:free"
+    },
+    "4316905950": {
+      "commentId": 4316905950,
+      "notes": [
+        "1 commit(s) since the comment",
+        "The commented lines were changed",
+        "Other files changed: src/format.ts",
+        "No CI results on the latest commit"
+      ],
+      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+      "checkedAt": 1792442006081,
+      "droppedEvidence": 0,
+      "status": "unresolved",
+      "intent": "change_request",
+      "rationale": "The review comment requested validation that both quantity and unitPrice are positive before adding a line. The current code only validates quantity (throwing an error if quantity <= 0) and does not check unitPrice at all.",
+      "whatIsMissing": "Validation for unitPrice > 0.",
+      "evidence": [
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 24,
+          "endLine": 28,
+          "quote": "export function addLine(order: Order, quantity: number, unitPrice: number): Order {\n  if (quantity <= 0) throw new Error(\"Quantity must be positive\");\n  order.cart.items.push({ sku: `line-${order.cart.items.length}`, name: \"custom\", quantity, unitPrice });\n  return order;\n}",
+          "supports": false,
+          "verified": true
+        }
+      ],
+      "decidedBy": "ai",
+      "model": "nvidia/nemotron-3-super-120b-a12b:free"
+    }
+  }
+}
