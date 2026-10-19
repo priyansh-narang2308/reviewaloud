@@ -53,7 +53,7 @@ test("full demo flow: pin, dictate, save, publish (simulated), ledger replay, ha
 test("landing: demo CTA and PR form work; no horizontal overflow on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Review by voice");
+  await expect(page.getByRole("heading", { level: 1, name: "Review aloud. Prove it." })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
   await page.getByTestId("hero-demo").click();
   await expect(page).toHaveURL(/\/demo$/);

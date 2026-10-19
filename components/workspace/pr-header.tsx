@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/brand/logo";
 import type { PullRequest } from "@/lib/github/pr";
 
 function StateBadge({ pr }: { pr: PullRequest }) {
@@ -17,8 +18,8 @@ export function PrHeader({ pr, fileCount, right }: { pr: PullRequest; fileCount:
     <header className="border-b border-border bg-surface">
       <div className="mx-auto flex max-w-[1600px] flex-col gap-2 px-4 py-4 lg:px-6">
         <div className="flex items-center gap-3 text-sm text-muted">
-          <Link href="/" className="font-semibold text-text hover:text-accent">
-            ReviewAloud
+          <Link href="/" aria-label="ReviewAloud home" className="transition-opacity hover:opacity-80">
+            <Logo size={22} />
           </Link>
           <span className="text-faint">/</span>
           <span className="font-mono">{pr.repoFullName}</span>

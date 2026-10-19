@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ReviewAloud",
+  title: "ReviewAloud · Review by voice. Prove the fix landed.",
   description: "Voice-first GitHub PR reviews with evidence-backed verification of follow-up fixes.",
 };
 
