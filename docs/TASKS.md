@@ -10,8 +10,8 @@ Status: TODO · IN PROGRESS · BLOCKED · DONE. Full task definitions: [IMPLEMEN
 | 4   | Wispr capture spike                    | P0  | IN PROGRESS | `/spike/capture` built; simulated-paste e2e passes. Remaining: your 10 real Wispr dictations (G1) |
 | 5   | GitHub write spike                     | P0  | DONE | G2 PASS (6/6 anchors). Pending hidden from others, 2nd pending → 422, submit + reply OK. G3 partial: tested with gh OAuth token; GitHub App token in Task 17. Found: GitHub accepts cross-hunk ranges and LEFT on context lines |
 | 6   | GitHub client + PR fetch               | P0  | DONE | Typed errors, Link pagination (≤3000 files), Zod-validated responses, recorded-fixture tests. No ETag cache (deferred). Used injected fetch instead of MSW |
-| 7   | Unified diff parser                    | P0  | TODO    |                                                                                |
-| 8   | Anchor mapper + validator              | P0  | TODO    |                                                                                |
+| 7   | Unified diff parser                    | P0  | DONE | 18 tests on real sandbox patches + real git edge cases (no-EOF-newline, omitted counts, deleted file, blank context); strict count checks reject malformed patches |
+| 8   | Anchor mapper + validator              | P0  | DONE | 20 tests. UI anchors match all 6 live-verified GitHub placements; validates side/number/text; single-hunk range rule; re-maps drafts by unique text after head moves, else outdated (never guesses) |
 | 9   | Diff viewer                            | P0  | TODO    |                                                                                |
 | 10  | Workspace shell + file nav             | P0  | TODO    |                                                                                |
 | 11  | Review store                           | P0  | TODO    |                                                                                |
