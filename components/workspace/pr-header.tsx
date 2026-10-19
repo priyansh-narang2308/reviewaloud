@@ -17,13 +17,13 @@ export function PrHeader({ pr, fileCount, right }: { pr: PullRequest; fileCount:
   return (
     <header className="border-b border-border bg-surface">
       <div className="mx-auto flex max-w-[1600px] flex-col gap-2 px-4 py-4 lg:px-6">
-        <div className="flex items-center gap-3 text-sm text-muted">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
           <Link href="/" aria-label="ReviewAloud home" className="transition-opacity hover:opacity-80">
             <Logo size={22} />
           </Link>
           <span className="text-faint">/</span>
-          <span className="font-mono">{pr.repoFullName}</span>
-          <span className="ml-auto flex items-center gap-3">{right}</span>
+          <span className="min-w-0 max-w-full truncate font-mono">{pr.repoFullName}</span>
+          <span className="ml-auto flex flex-wrap items-center justify-end gap-2 sm:gap-3">{right}</span>
         </div>
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h1 className="text-xl font-semibold tracking-tight">

@@ -92,7 +92,7 @@ export const FileDiff = memo(function FileDiff({ file, fileIndex, selected, card
           {file.parseError
             ? `This diff couldn't be read (${file.parseError}).`
             : "No diff to show: binary file, pure rename, or too large for GitHub to send."}{" "}
-          <a className="text-accent underline-offset-2 hover:underline" href={githubUrl} target="_blank" rel="noreferrer">
+          <a className="text-accent underline underline-offset-2" href={githubUrl} target="_blank" rel="noreferrer">
             View on GitHub
           </a>
         </p>

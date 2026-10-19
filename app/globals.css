@@ -8,8 +8,8 @@
   --border: #252a33;
   --border-strong: #343a46;
   --text: #e7e9ee;
-  --muted: #8b93a3;
-  --faint: #5b6271;
+  --muted: #a0a8b6;
+  --faint: #848c9c; /* ≥4.5:1 on bg/surface (WCAG AA) */
   --accent: #f5a524; /* the "pin": anchors, selection, voice */
   --accent-soft: rgb(245 165 36 / 0.14);
   --add-bg: rgb(46 160 67 / 0.14);
@@ -50,9 +50,9 @@ body {
 
 /* Diff rows */
 .diff-row[data-kind="add"] { background: var(--add-bg); }
-.diff-row[data-kind="add"] .diff-gutter { background: var(--add-gutter); }
+.diff-row[data-kind="add"] .diff-gutter { background: var(--add-gutter); color: #b4bccb; }
 .diff-row[data-kind="del"] { background: var(--del-bg); }
-.diff-row[data-kind="del"] .diff-gutter { background: var(--del-gutter); }
+.diff-row[data-kind="del"] .diff-gutter { background: var(--del-gutter); color: #b4bccb; }
 .diff-row[aria-selected="true"] { box-shadow: inset 3px 0 0 var(--accent); background-image: linear-gradient(var(--accent-soft), var(--accent-soft)); }
 .diff-file { content-visibility: auto; contain-intrinsic-size: auto 600px; }
 .diff-row[data-marked] .diff-gutter { box-shadow: inset -3px 0 0 var(--accent); }

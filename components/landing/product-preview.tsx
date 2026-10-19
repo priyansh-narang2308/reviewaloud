@@ -31,7 +31,7 @@ export function ProductPreview() {
             <span className="truncate whitespace-pre pl-2">{"  const sum = orders.reduce((n, o) => n + orderTotal(o), 0);"}</span>
           </div>
           <div className="flex bg-[var(--add-bg)] shadow-[inset_3px_0_0_var(--accent)]">
-            <span className="w-9 shrink-0 bg-[var(--add-gutter)] pr-2 text-right text-faint">11</span>
+            <span className="w-9 shrink-0 bg-[var(--add-gutter)] pr-2 text-right text-[#b4bccb]">11</span>
             <span className="truncate whitespace-pre pl-2 text-text">{"  return sum / orders.length;"}</span>
           </div>
           <div className="flex text-faint">

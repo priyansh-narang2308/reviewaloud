@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-19T20:33:36.634Z",
+  "recordedAt": "2026-10-19T20:59:40.718Z",
   "source": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/pull/2",
   "note": "Snapshot of a public sandbox PR with planted test cases. Verdicts are the recorded output of one live Promise Ledger run.",
   "ref": {
@@ -19,23 +19,23 @@
       "login": "priyansh-narang2308",
       "avatarUrl": "https://avatars.githubusercontent.com/u/145008344?v=4"
     },
-    "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+    "headSha": "c8277dca2e0d490b2cfd0016a41787835e887a41",
     "headRef": "feature/order-history",
     "baseSha": "aebf19101661bc3611e5ac724bf78f1cb86a099e",
     "baseRef": "main",
     "isPrivate": false,
     "repoFullName": "priyansh-narang2308/reviewaloud-sandbox",
     "changedFiles": 3,
-    "additions": 29,
+    "additions": 30,
     "deletions": 1
   },
   "files": [
     {
-      "path": ".DS_Store",
+      "path": ".gitignore",
       "status": "added",
-      "additions": 0,
+      "additions": 1,
       "deletions": 0,
-      "patch": null,
+      "patch": "@@ -0,0 +1 @@\n+.DS_Store",
       "previousPath": null
     },
     {
@@ -56,7 +56,7 @@
     }
   ],
   "ledger": {
-    "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
+    "headSha": "c8277dca2e0d490b2cfd0016a41787835e887a41",
     "prAuthor": "priyansh-narang2308",
     "reviewers": [
       "priyansh-narang2308"
@@ -143,20 +143,29 @@
     "4316905916": {
       "commentId": 4316905916,
       "notes": [
-        "1 commit(s) since the comment",
+        "2 commit(s) since the comment",
         "The commented lines were changed",
         "The commented line was removed",
-        "Other files changed: src/format.ts",
+        "Other files changed: .DS_Store, .gitignore, src/format.ts",
         "No CI results on the latest commit"
       ],
-      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
-      "checkedAt": 1792441924182,
-      "droppedEvidence": 0,
+      "headSha": "c8277dca2e0d490b2cfd0016a41787835e887a41",
+      "checkedAt": 1792443475831,
+      "droppedEvidence": 1,
       "status": "addressed",
       "intent": "change_request",
-      "rationale": "The orderTotal function now calculates base = subtotal(order.cart) and returns base - base * discountRate(order.cart.discountCode), which applies the discount rate in the same manner as total() in cart.ts.",
+      "rationale": "The orderTotal function now calculates the subtotal and then subtracts the discount using discountRate, exactly as requested.",
       "whatIsMissing": null,
       "evidence": [
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 5,
+          "endLine": 5,
+          "quote": "export function orderTotal(order: Order): number {",
+          "supports": true,
+          "verified": true
+        },
         {
           "kind": "code",
           "path": "src/orders.ts",
@@ -182,18 +191,18 @@
     "4316905924": {
       "commentId": 4316905924,
       "notes": [
-        "1 commit(s) since the comment",
+        "2 commit(s) since the comment",
         "The commented lines were changed",
-        "Other files changed: src/format.ts",
+        "Other files changed: .DS_Store, .gitignore, src/format.ts",
         "No CI results on the latest commit"
       ],
-      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
-      "checkedAt": 1792441955821,
+      "headSha": "c8277dca2e0d490b2cfd0016a41787835e887a41",
+      "checkedAt": 1792443494221,
       "droppedEvidence": 0,
       "status": "unresolved",
       "intent": "change_request",
-      "rationale": "The averageOrderValue function still divides by orders.length without checking for empty array, so it would produce NaN (or Infinity) when there are no orders, contrary to the request to guard the empty array and return 0.",
-      "whatIsMissing": "A guard such as if (orders.length === 0) return 0; before the division.",
+      "rationale": "The review comment requested guarding against division by zero when the orders array is empty, i.e., returning 0 for averageOrderValue when orders.length === 0. The latest code of src/orders.ts shows the function unchanged: it still computes `const sum = orders.reduce((n, o) => n + orderTotal(o), 0); return sum / orders.length;` with no check for empty array. No other modified files contain a fix for this function. Therefore the request remains unmet.",
+      "whatIsMissing": "A guard clause such as `if (orders.length === 0) return 0;` (or equivalent) at the start of averageOrderValue.",
       "evidence": [
         {
           "kind": "code",
@@ -211,25 +220,25 @@
     "4316905936": {
       "commentId": 4316905936,
       "notes": [
-        "1 commit(s) since the comment",
+        "2 commit(s) since the comment",
         "The commented lines were not changed",
-        "Other files changed: src/format.ts",
+        "Other files changed: .DS_Store, .gitignore, src/format.ts",
         "No CI results on the latest commit"
       ],
-      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
-      "checkedAt": 1792441973238,
+      "headSha": "c8277dca2e0d490b2cfd0016a41787835e887a41",
+      "checkedAt": 1792443504463,
       "droppedEvidence": 0,
       "status": "unresolved",
       "intent": "question",
-      "rationale": "The question about sorting order remains unanswered; the code still sorts newest first and there is no reply in the provided data.",
-      "whatIsMissing": "A reply explaining the sorting choice or a code change to align with the history screen.",
+      "rationale": "The reviewer asked why the sorting is newest‑first when the history screen shows oldest‑first. The code of `recentOrders` still sorts descending (newest first) and there is no reply or substantive change that answers the question.",
+      "whatIsMissing": "A reply explaining the sorting choice or a change to make the order oldest‑first.",
       "evidence": [
         {
           "kind": "code",
           "path": "src/orders.ts",
-          "startLine": 17,
-          "endLine": 17,
-          "quote": "return [...orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt));",
+          "startLine": 16,
+          "endLine": 18,
+          "quote": "export function recentOrders(orders: Order[]): Order[] {\n  return [...orders].sort((a, b) => b.placedAt.localeCompare(a.placedAt));\n}",
           "supports": false,
           "verified": true
         }
@@ -240,20 +249,29 @@
     "4316905938": {
       "commentId": 4316905938,
       "notes": [
-        "1 commit(s) since the comment",
+        "2 commit(s) since the comment",
         "The commented lines were changed",
         "The commented line was removed",
-        "Other files changed: src/format.ts",
+        "Other files changed: .DS_Store, .gitignore, src/format.ts",
         "No CI results on the latest commit"
       ],
-      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
-      "checkedAt": 1792441990036,
+      "headSha": "c8277dca2e0d490b2cfd0016a41787835e887a41",
+      "checkedAt": 1792443540110,
       "droppedEvidence": 0,
       "status": "addressed",
       "intent": "change_request",
-      "rationale": "The rounding logic was moved from roundedTotal to formatPrice, and roundedTotal now returns the raw total as requested.",
+      "rationale": "The rounding logic was moved from order logic to formatPrice, and the order total functions now return the raw (unrounded) value as requested.",
       "whatIsMissing": null,
       "evidence": [
+        {
+          "kind": "code",
+          "path": "src/format.ts",
+          "startLine": 2,
+          "endLine": 2,
+          "quote": "return \"Rs \" + (Math.round(amount * 100) / 100).toFixed(2);",
+          "supports": true,
+          "verified": true
+        },
         {
           "kind": "code",
           "path": "src/orders.ts",
@@ -265,10 +283,19 @@
         },
         {
           "kind": "code",
-          "path": "src/format.ts",
-          "startLine": 2,
-          "endLine": 2,
-          "quote": "  return \"Rs \" + (Math.round(amount * 100) / 100).toFixed(2);",
+          "path": "src/orders.ts",
+          "startLine": 5,
+          "endLine": 7,
+          "quote": "const base = subtotal(order.cart);\n  return base - base * discountRate(order.cart.discountCode);",
+          "supports": true,
+          "verified": true
+        },
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 20,
+          "endLine": 22,
+          "quote": "export function roundedTotal(order: Order): number {\n  return orderTotal(order);\n}",
           "supports": true,
           "verified": true
         }
@@ -279,25 +306,34 @@
     "4316905950": {
       "commentId": 4316905950,
       "notes": [
-        "1 commit(s) since the comment",
+        "2 commit(s) since the comment",
         "The commented lines were changed",
-        "Other files changed: src/format.ts",
+        "Other files changed: .DS_Store, .gitignore, src/format.ts",
         "No CI results on the latest commit"
       ],
-      "headSha": "bf0a594a66ccbca7ce6c3b18b52ebf33ad12a29c",
-      "checkedAt": 1792442006081,
+      "headSha": "c8277dca2e0d490b2cfd0016a41787835e887a41",
+      "checkedAt": 1792443567437,
       "droppedEvidence": 0,
       "status": "unresolved",
       "intent": "change_request",
-      "rationale": "The review comment requested validation that both quantity and unitPrice are positive before adding a line. The current code only validates quantity (throwing an error if quantity <= 0) and does not check unitPrice at all.",
-      "whatIsMissing": "Validation for unitPrice > 0.",
+      "rationale": "The code now validates quantity > 0 but does not validate unitPrice > 0 as requested.",
+      "whatIsMissing": "Validation that unitPrice is positive before adding the line.",
       "evidence": [
         {
           "kind": "code",
           "path": "src/orders.ts",
-          "startLine": 24,
-          "endLine": 28,
-          "quote": "export function addLine(order: Order, quantity: number, unitPrice: number): Order {\n  if (quantity <= 0) throw new Error(\"Quantity must be positive\");\n  order.cart.items.push({ sku: `line-${order.cart.items.length}`, name: \"custom\", quantity, unitPrice });\n  return order;\n}",
+          "startLine": 25,
+          "endLine": 25,
+          "quote": "if (quantity <= 0) throw new Error(\"Quantity must be positive\");",
+          "supports": false,
+          "verified": true
+        },
+        {
+          "kind": "code",
+          "path": "src/orders.ts",
+          "startLine": 26,
+          "endLine": 26,
+          "quote": "order.cart.items.push({ sku: `line-${order.cart.items.length}`, name: \"custom\", quantity, unitPrice });",
           "supports": false,
           "verified": true
         }

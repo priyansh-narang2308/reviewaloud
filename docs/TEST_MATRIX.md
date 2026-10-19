@@ -33,6 +33,7 @@ Results are recorded only after a run. "—" means not yet run.
 | Ledger vs real GitHub + OpenRouter | live script | `scripts/live-ledger-check.ts` | 5/5 planted (G4) |
 | Demo flow (no network) + landing | e2e | `e2e/demo.spec.ts` | 2/2 pass |
 | Landing mascot (corner, tips, landing-only, reduced motion) | e2e | `e2e/mascot.spec.ts` | 3/3 pass |
+| Accessibility (axe WCAG 2.1 AA) + no overflow @375 | e2e | `e2e/a11y.spec.ts` | 9/9 pass |
 | Workspace + landing | e2e (live sandbox PR) | `e2e/workspace.spec.ts` | 9/9 pass |
 | Smoke      | e2e  | `e2e/smoke.spec.ts` | 1/1 pass |
 | Capture spike | e2e | `e2e/capture-spike.spec.ts` | 2/2 pass |
@@ -63,3 +64,4 @@ Not run yet. Will report confusion matrix and false-addressed rate exactly as me
 - 2026-10-20 · Tasks 33–34: unit 130/130, e2e 45/45, build OK (`/demo` static). Found + fixed: landing preview overflowed at 1280 and 375 px (grid min-content) → `minmax(0,…)` + `min-w-0`. Dev-server stale-module issue seen again (hydration mismatch on /demo until restart); not reproducible after restart.
 - 2026-10-20 · Landing mascot (user-supplied botpfp SVG; background removed, mirrored to peek from bottom-left). e2e 48/48 overall. Sizes 84/120/136/176 px by breakpoint to limit overlap with content.
 - 2026-10-20 · Brand + landing redesign: bubble-check logo (favicon `app/icon.svg`, `app/apple-icon.png` 180px, `public/logo.svg`), editorial hero (REVIEW / AL◉UD / PROVE ✓ IT, dot grid, side ribbon). Checked at 1440 and 375 px, no horizontal overflow; fixed wrapping in the separator row. Unit 130/130, e2e 48/48, build OK.
+- 2026-10-20 · Task 35: first axe run found color-contrast (faint #5b6271 = 3.19:1 on bg; gutter numbers 2.18:1 on add tint) and link-in-text-block; fixed (faint #848c9c ≥4.54:1 on all surfaces, gutter text #b4bccb 6.99:1). Responsive: workspace was 523 px wide at 375 px (PR header actions) → wraps now. Found sandbox PR #2 contained a stray `.DS_Store` → removed in a labelled commit; demo re-recorded: same 5 verdicts as the previous recording.

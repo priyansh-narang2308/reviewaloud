@@ -264,7 +264,7 @@ export function Workspace({ data, aiEnabled, demo }: { data: WorkspaceData; aiEn
               </a>{" "}
               with planted test cases. Dictate or type real comments; publishing is <b>simulated</b> and Promise Ledger results are a{" "}
               <b>{recordedLabel(demo).toLowerCase()}</b>. Nothing is sent to GitHub or AI.{" "}
-              <Link href="/" className="font-medium text-accent underline-offset-2 hover:underline">
+              <Link href="/" className="font-medium text-accent underline underline-offset-2">
                 Use it on your own PRs →
               </Link>
             </p>
