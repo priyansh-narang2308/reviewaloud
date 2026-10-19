@@ -21,6 +21,8 @@ test.beforeEach(async ({ page }) => {
 test("pin a line, dictate, save: the draft lands on that line and survives reload", async ({ page }) => {
   await cart(page).locator(".diff-row[data-kind='del']").first().click();
   await expect(page.getByTestId("capture-anchor")).toContainText("src/cart.ts L20");
+  await expect(page.getByTestId("capture-anchor-detail")).toContainText("deleted line 20");
+  await expect(page.getByTestId("capture-anchor-detail")).toContainText("existing.quantity += item.quantity;");
   await expect(page.getByTestId("capture")).toBeFocused();
 
   await dictate(page, "Why drop the plus-equals here?\nThe cap silently hides overflow from the caller.");
@@ -46,6 +48,7 @@ test("a range anchor and a typed comment both work", async ({ page }) => {
   await cart(page).locator("[data-idx='6']").click();
   await cart(page).locator("[data-idx='8']").click({ modifiers: ["Shift"] });
   await expect(page.getByTestId("capture-anchor")).toContainText("R20–R22");
+  await expect(page.getByTestId("capture-anchor-detail")).toContainText("new lines 20–22");
   await page.getByTestId("capture").pressSequentially("nit: early return reads better");
   await page.getByRole("button", { name: "Save comment" }).click();
   await expect(page.getByTestId("draft-count")).toHaveText("1 draft");

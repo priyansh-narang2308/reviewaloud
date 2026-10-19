@@ -18,6 +18,9 @@ export type Anchor = {
   /** Text of the anchored line(s) when pinned; used to detect stale anchors. */
   lineText: string;
   startLineText?: string;
+  /** Kind of the (last) anchored line, for labels only; not sent to GitHub. */
+  lineKind?: "add" | "del" | "ctx";
+  startLineKind?: "add" | "del" | "ctx";
 };
 
 export type AnchorProblem =
@@ -35,7 +38,7 @@ const numberOn = (l: DiffLine, side: Side) => (side === "LEFT" ? l.oldNo : l.new
 
 export function anchorForLine(path: string, commitId: string, l: DiffLine): Anchor {
   const side = sideOf(l);
-  return { path, commitId, side, line: numberOn(l, side)!, lineText: l.text };
+  return { path, commitId, side, line: numberOn(l, side)!, lineText: l.text, lineKind: l.kind };
 }
 
 export function anchorForRange(
@@ -56,6 +59,7 @@ export function anchorForRange(
       startSide,
       startLine: numberOn(first, startSide)!,
       startLineText: first.text,
+      startLineKind: first.kind,
     },
   };
 }

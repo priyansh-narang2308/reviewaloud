@@ -56,3 +56,21 @@ body {
 .diff-row[aria-selected="true"] { box-shadow: inset 3px 0 0 var(--accent); background-image: linear-gradient(var(--accent-soft), var(--accent-soft)); }
 .diff-file { content-visibility: auto; contain-intrinsic-size: auto 600px; }
 .diff-row[data-marked] .diff-gutter { box-shadow: inset -3px 0 0 var(--accent); }
+
+/* Tailwind's preflight resets buttons to the default cursor; restore pointers. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+[role="menuitem"],
+[role="menuitemradio"],
+select:not(:disabled),
+summary,
+label[for],
+.diff-row {
+  cursor: pointer;
+}
+button:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
+
+@keyframes ra-pop { from { opacity: 0; transform: scale(0.96) translateY(-2px); } to { opacity: 1; transform: none; } }

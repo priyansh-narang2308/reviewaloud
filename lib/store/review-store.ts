@@ -19,6 +19,8 @@ export const anchorSchema = z.object({
   startLine: z.number().int().positive().optional(),
   lineText: z.string(),
   startLineText: z.string().optional(),
+  lineKind: z.enum(["add", "del", "ctx"]).optional(),
+  startLineKind: z.enum(["add", "del", "ctx"]).optional(),
 }) satisfies z.ZodType<Anchor>;
 
 const cardSchema = z.object({

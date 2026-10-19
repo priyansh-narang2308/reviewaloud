@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import files from "../github/__fixtures__/sandbox-pr-1-files.json";
 import { parsePatch } from "../diff/parse";
-import { describeAnchor, nextSelection, selectionToAnchor } from "./selection";
+import { describeAnchor, describeAnchorLong, nextSelection, selectionToAnchor } from "./selection";
 
 const cart = parsePatch(files.find((f) => f.filename === "src/cart.ts")!.patch!);
 
@@ -32,5 +32,19 @@ describe("selection", () => {
     const del = cart.lines.find((l) => l.kind === "del")!;
     const r = selectionToAnchor({ path: "src/cart.ts", anchorIdx: del.idx, focusIdx: del.idx }, cart, "sha");
     expect(r.ok && describeAnchor(r.anchor)).toBe("L20");
+  });
+
+  it("spells out deleted vs new lines", () => {
+    const del = cart.lines.find((l) => l.kind === "del")!;
+    const one = selectionToAnchor({ path: "p", anchorIdx: del.idx, focusIdx: del.idx }, cart, "s");
+    expect(one.ok && describeAnchorLong(one.anchor)).toBe("deleted line 20");
+    const range = selectionToAnchor({ path: "p", anchorIdx: 6, focusIdx: 8 }, cart, "s");
+    expect(range.ok && describeAnchorLong(range.anchor)).toBe("new lines 20–22");
+    const mixed = selectionToAnchor({ path: "p", anchorIdx: del.idx, focusIdx: del.idx + 1 }, cart, "s");
+    expect(mixed.ok && describeAnchorLong(mixed.anchor)).toBe("deleted line 20 – new line 25");
+    const ctx = selectionToAnchor({ path: "p", anchorIdx: 0, focusIdx: 0 }, cart, "s");
+    expect(ctx.ok && describeAnchorLong(ctx.anchor)).toBe("unchanged line 14");
+    const spanning = selectionToAnchor({ path: "p", anchorIdx: 2, focusIdx: 3 }, cart, "s");
+    expect(spanning.ok && describeAnchorLong(spanning.anchor)).toBe("unchanged line 16 – new line 17");
   });
 });

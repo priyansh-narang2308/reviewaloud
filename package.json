@@ -17,6 +17,7 @@
     "eval": "tsx scripts/eval-ledger.ts"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.2.1",
     "iron-session": "^9.0.1",
     "next": "16.4.2",
     "react": "19.3.0",

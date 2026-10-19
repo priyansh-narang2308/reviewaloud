@@ -29,6 +29,17 @@ export function describeAnchor(a: Anchor): string {
   return `${s}–${a.side === "LEFT" ? "L" : "R"}${a.line}`;
 }
 
+/** Plain-language anchor, e.g. "deleted line 12", "new line 12", "new lines 20–22". */
+export function describeAnchorLong(a: Anchor): string {
+  const word = (side: "LEFT" | "RIGHT", kind?: "add" | "del" | "ctx") =>
+    kind === "ctx" ? "unchanged" : kind === "add" ? "new" : kind === "del" || side === "LEFT" ? "deleted" : "new";
+  const end = word(a.side, a.lineKind);
+  if (a.startLine === undefined) return `${end} line ${a.line}`;
+  const start = word(a.startSide ?? a.side, a.startLineKind);
+  if ((a.startSide ?? a.side) === a.side && start === end) return `${end} lines ${a.startLine}–${a.line}`;
+  return `${start} line ${a.startLine} – ${end} line ${a.line}`;
+}
+
 export const PROBLEM_TEXT: Record<AnchorProblem, string> = {
   cross_hunk: "A range must stay inside one hunk. Shift-click a line in the same block.",
   not_in_diff: "That line isn't part of this diff.",

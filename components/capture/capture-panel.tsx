@@ -3,7 +3,7 @@
 import { forwardRef, useState } from "react";
 import type { Anchor } from "@/lib/diff/anchors";
 import type { CaptureSource } from "@/lib/store/review-store";
-import { describeAnchor } from "@/lib/workspace/selection";
+import { describeAnchor, describeAnchorLong } from "@/lib/workspace/selection";
 
 type Status = "idle" | "received" | "typing" | "saved";
 
@@ -38,7 +38,7 @@ export const CapturePanel = forwardRef<HTMLTextAreaElement, Props>(function Capt
     if (!canSave || !anchor) return;
     const source: CaptureSource = sources.size > 1 ? "mixed" : sources.has("paste") ? "paste" : "typed";
     onSave(text.trim(), source);
-    setSavedTo(`${anchor.path} ${describeAnchor(anchor)}`);
+    setSavedTo(`${anchor.path} ${describeAnchor(anchor)} (${describeAnchorLong(anchor)})`);
     setText("");
     setSources(new Set());
     setStatus("saved");
@@ -70,13 +70,21 @@ export const CapturePanel = forwardRef<HTMLTextAreaElement, Props>(function Capt
             aria-hidden
             className={`h-2.5 w-2.5 shrink-0 rounded-full ${anchor ? "bg-accent shadow-[0_0_0_4px_var(--accent-soft)]" : "border border-border-strong"}`}
           />
-          <span data-testid="capture-anchor" className="min-w-0 truncate font-mono text-[13px]">
-            {anchor ? (
-              <>
-                {anchor.path} <span className="text-accent">{describeAnchor(anchor)}</span>
-              </>
-            ) : (
-              <span className="text-muted">No line pinned</span>
+          <span className="min-w-0">
+            <span data-testid="capture-anchor" className="block truncate font-mono text-[13px]">
+              {anchor ? (
+                <>
+                  {anchor.path} <span className="text-accent">{describeAnchor(anchor)}</span>
+                </>
+              ) : (
+                <span className="text-muted">No line pinned</span>
+              )}
+            </span>
+            {anchor && (
+              <span data-testid="capture-anchor-detail" className="block truncate text-[11px] text-muted" title={anchor.lineText}>
+                <span className={anchor.side === "LEFT" ? "text-rose-300" : "text-emerald-300"}>{describeAnchorLong(anchor)}</span>
+                <span className="font-mono text-faint"> · {anchor.lineText.trim() || "(blank line)"}</span>
+              </span>
             )}
           </span>
         </div>

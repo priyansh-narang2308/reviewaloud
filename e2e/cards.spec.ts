@@ -29,14 +29,15 @@ test("edit, set type, and the change persists across reload", async ({ page }) =
   await card.getByRole("button", { name: "Edit" }).click();
   await card.getByTestId("card-edit").fill("Why 99? Make the cap configurable.");
   await page.keyboard.press("ControlOrMeta+Enter");
-  await card.getByTestId("card-type").selectOption("suggestion");
+  await card.getByTestId("card-type").click();
+  await page.getByRole("menuitemradio", { name: /Suggestion/ }).click();
   await expect(card.getByTestId("card-body")).toHaveText("Why 99? Make the cap configurable.");
 
   await page.reload();
   await expect(page.locator("[data-hydrated]")).toBeVisible();
   const again = cart(page).getByTestId("comment-card");
   await expect(again.getByTestId("card-body")).toHaveText("Why 99? Make the cap configurable.");
-  await expect(again.getByTestId("card-type")).toHaveValue("suggestion");
+  await expect(again.getByTestId("card-type")).toHaveAttribute("data-value", "suggestion");
 });
 
 test("Esc while editing cancels the edit only", async ({ page }) => {
@@ -125,4 +126,29 @@ test("tidy API rejects malformed input", async ({ page, baseURL }) => {
   test.skip(!(await aiConfigured(page, baseURL!)), "AI not configured");
   const res = await page.request.post("/api/ai/tidy", { headers: { Origin: baseURL! }, data: { body: "" } });
   expect(res.status()).toBe(400);
+});
+
+test("type picker works from the keyboard and can clear the type", async ({ page }) => {
+  await addComment(page, 3, "x");
+  const trigger = cart(page).getByTestId("card-type");
+  await trigger.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("menu")).toBeVisible();
+  await page.keyboard.press("s"); // type-ahead to "Suggestion"
+  await expect(page.getByRole("menuitemradio", { name: /Suggestion/ })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(trigger).toHaveAttribute("data-value", "suggestion");
+  await trigger.click();
+  await page.getByRole("menuitemradio", { name: "No type" }).click();
+  await expect(trigger).toHaveAttribute("data-value", "");
+  await expect(trigger).toHaveText(/Add type/);
+});
+
+test("interactive elements show a pointer cursor", async ({ page }) => {
+  await addComment(page, 3, "x");
+  const cursor = (sel: import("@playwright/test").Locator) => sel.evaluate((el) => getComputedStyle(el).cursor);
+  expect(await cursor(cart(page).getByTestId("card-type"))).toBe("pointer");
+  expect(await cursor(cart(page).getByRole("button", { name: "Edit" }))).toBe("pointer");
+  expect(await cursor(cart(page).locator(".diff-row").first())).toBe("pointer");
+  expect(await cursor(page.getByRole("button", { name: "Save comment" }))).toBe("not-allowed");
 });

@@ -1,17 +1,14 @@
 "use client";
 
 import { memo, useState } from "react";
-import { COMMENT_TYPES, type Card, type CommentType } from "@/lib/store/review-store";
+import type { Card, CommentType } from "@/lib/store/review-store";
 import { describeAnchor } from "@/lib/workspace/selection";
 import { useCardActions } from "./card-actions";
+import { TYPE_META, TypePicker } from "./type-picker";
 
-export const TYPE_STYLE: Record<CommentType, { label: string; cls: string }> = {
-  blocking: { label: "Blocking", cls: "border-rose-500/50 text-rose-300 bg-rose-500/10" },
-  suggestion: { label: "Suggestion", cls: "border-sky-500/50 text-sky-300 bg-sky-500/10" },
-  question: { label: "Question", cls: "border-violet-500/50 text-violet-300 bg-violet-500/10" },
-  nit: { label: "Nit", cls: "border-border-strong text-muted bg-surface-2" },
-  praise: { label: "Praise", cls: "border-emerald-500/50 text-emerald-300 bg-emerald-500/10" },
-};
+export const TYPE_STYLE: Record<CommentType, { label: string; cls: string }> = Object.fromEntries(
+  Object.entries(TYPE_META).map(([k, v]) => [k, { label: v.label, cls: v.chip }]),
+) as Record<CommentType, { label: string; cls: string }>;
 
 const SOURCE_LABEL = { paste: "dictated / pasted", typed: "typed", mixed: "dictated + typed" } as const;
 
@@ -36,23 +33,7 @@ export const CommentCard = memo(function CommentCard({ card }: { card: Card }) {
       className={`rounded-lg border bg-surface p-3 font-sans text-sm shadow-sm ${moving ? "border-accent" : "border-border-strong"}`}
     >
       <header className="mb-2 flex flex-wrap items-center gap-2 text-xs">
-        <label className="sr-only" htmlFor={`type-${card.id}`}>
-          Comment type
-        </label>
-        <select
-          id={`type-${card.id}`}
-          data-testid="card-type"
-          value={card.type ?? ""}
-          onChange={(e) => actions.update(card.id, { type: (e.target.value || null) as CommentType | null })}
-          className={`rounded-full border px-2 py-0.5 ${card.type ? TYPE_STYLE[card.type].cls : "border-dashed border-border-strong bg-transparent text-faint"}`}
-        >
-          <option value="">Add type</option>
-          {COMMENT_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {TYPE_STYLE[t].label}
-            </option>
-          ))}
-        </select>
+        <TypePicker value={card.type} onChange={(type) => actions.update(card.id, { type })} />
         <span className="font-mono text-faint">{describeAnchor(card.anchor)}</span>
         <span className="text-faint">· {SOURCE_LABEL[card.source]}</span>
         <span className="ml-auto flex gap-1">
