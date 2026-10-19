@@ -16,10 +16,10 @@ Status: TODO · IN PROGRESS · BLOCKED · DONE. Full task definitions: [IMPLEMEN
 | 10  | Workspace shell + file nav             | P0  | DONE | `/pr/[owner]/[repo]/[n]`, landing PR-URL form (+ no-JS `/open` fallback), file tree with +/−, `[ ]` files, `j/k` lines, Esc; loading skeleton; error states incl. rate limit (seen live) |
 | 11  | Review store                           | P0  | DONE | Zod-validated, versioned localStorage store keyed per PR (deviation: not per head SHA, so drafts survive new commits; anchors carry their commit). Undo delete, corrupt data set aside, throwing storage handled, cross-tab reload |
 | 12  | Capture panel (Pin & Speak)            | P0  | IN PROGRESS | Docked capture panel in the real workspace: click pins + focuses field, paste → "Text received", ⌘↵ saves, Esc returns to diff, text-before-pin kept, typing fallback, draft markers. Simulated-paste e2e pass. Remaining: your real Wispr run (G1) |
-| 13  | Comment cards                          | P0  | TODO    |                                                                                |
-| 14  | Re-anchor + multi-line ranges          | P1  | TODO    |                                                                                |
-| 15  | Keyboard & speed pass                  | P1  | TODO    |                                                                                |
-| 16  | AI tidy + intent suggestion            | P2  | TODO    |                                                                                |
+| 13  | Comment cards                          | P0  | DONE | Inline cards under anchored line + sidebar drafts list (outdated flagged); edit (⌘↵/Esc, Wispr works in edit box), type select, delete with Undo toast; persists |
+| 14  | Re-anchor + multi-line ranges          | P1  | DONE | Move mode: pick a new line or range (single-hunk rule enforced), "Move here" to confirm, Esc cancels |
+| 15  | Keyboard & speed pass                  | P1  | DONE | `?` shortcuts dialog, n/p hunk jump, shift+j/k extend, c/Enter focus capture, global keys yield to open dialogs (bug found+fixed). Timed comparison vs GitHub UI moved to Task 38 validation |
+| 16  | AI tidy + intent suggestion            | P2  | DONE | OpenRouter structured output (strict JSON schema, Zod, 1 repair, model fallback), same-origin + per-IP limit (10/h), untrusted-code delimiters, rejects invented identifiers; side-by-side accept/keep. Live: correct output; latency 3.2s and ~40s in 2 tries |
 | 17  | GitHub App auth                        | P0  | TODO    |                                                                                |
 | 18  | Publish preview + validation           | P0  | TODO    |                                                                                |
 | 19  | Create pending review                  | P0  | TODO    |                                                                                |

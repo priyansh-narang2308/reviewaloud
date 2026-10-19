@@ -14,10 +14,10 @@ const schema = z.object({
   OPENROUTER_API_KEY: z.string().min(1).optional(),
   // Primary model, then comma-separated fallbacks tried in order. Free
   // (":free") models are rate-limited (20/min; 50/day without purchased credits).
-  OPENROUTER_MODEL: z.string().min(1).default("nvidia/nemotron-3-super-120b-a12b:free"),
+  OPENROUTER_MODEL: z.string().min(1).default("nvidia/nemotron-3.5-super-vl:free"),
   OPENROUTER_FALLBACK_MODELS: z
     .string()
-    .default("nvidia/nemotron-3.5-super-vl:free,google/gemma-4-31b-it:free")
+    .default("nvidia/nemotron-3-super-120b-a12b:free,dots-studio/dots-3-note-preview:free")
     .transform((v) =>
       v
         .split(",")

@@ -19,7 +19,7 @@ export function FileTree({
   onPick: (i: number) => void;
 }) {
   return (
-    <nav aria-label="Changed files" className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+    <nav aria-label="Changed files">
       <h2 className="mb-2 px-2 text-xs font-medium uppercase tracking-wider text-muted">
         Files <span className="text-faint">{files.length}</span>
       </h2>

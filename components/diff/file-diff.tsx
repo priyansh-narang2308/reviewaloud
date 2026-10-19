@@ -1,7 +1,9 @@
 "use client";
 
-import { memo, useEffect, useRef, useState } from "react";
+import { Fragment, memo, useEffect, useRef, useState } from "react";
+import { CommentCard } from "@/components/cards/comment-card";
 import type { DiffLine } from "@/lib/diff/parse";
+import type { Card } from "@/lib/store/review-store";
 import { highlightLines, type LineTokens } from "@/lib/highlight/shiki";
 import type { WorkspaceFile } from "@/lib/workspace/types";
 
@@ -22,8 +24,8 @@ type Props = {
   fileIndex: number;
   /** Selected display-index range in this file, if any. */
   selected: { from: number; to: number } | null;
-  /** Display indices of lines with draft comments. */
-  marks?: ReadonlySet<number>;
+  /** Draft comments keyed by the display index of their (last) anchored line. */
+  cardsByIdx?: ReadonlyMap<number, Card[]>;
   onSelect: (path: string, idx: number, extend: boolean) => void;
   githubUrl: string;
 };
@@ -56,7 +58,7 @@ function useInView<T extends Element>() {
   return [ref, seen] as const;
 }
 
-export const FileDiff = memo(function FileDiff({ file, fileIndex, selected, marks, onSelect, githubUrl }: Props) {
+export const FileDiff = memo(function FileDiff({ file, fileIndex, selected, cardsByIdx, onSelect, githubUrl }: Props) {
   const lineCount = file.parsed?.lines.length ?? 0;
   const [expanded, setExpanded] = useState(lineCount <= COLLAPSE_OVER);
   const [ref, inView] = useInView<HTMLElement>();
@@ -115,16 +117,29 @@ export const FileDiff = memo(function FileDiff({ file, fileIndex, selected, mark
                   {h.header}
                 </span>
               </div>
-              {file.parsed!.lines.slice(h.lineRange[0], h.lineRange[1] + 1).map((l) => (
-                <Row
-                  key={l.idx}
-                  line={l}
-                  tokens={tokens?.[l.idx]}
-                  selected={!!selected && l.idx >= selected.from && l.idx <= selected.to}
-                  marked={!!marks?.has(l.idx)}
-                  onSelect={(extend) => onSelect(file.path, l.idx, extend)}
-                />
-              ))}
+              {file.parsed!.lines.slice(h.lineRange[0], h.lineRange[1] + 1).map((l) => {
+                const cards = cardsByIdx?.get(l.idx);
+                return (
+                  <Fragment key={l.idx}>
+                    <Row
+                      line={l}
+                      tokens={tokens?.[l.idx]}
+                      selected={!!selected && l.idx >= selected.from && l.idx <= selected.to}
+                      marked={!!cards}
+                      onSelect={(extend) => onSelect(file.path, l.idx, extend)}
+                    />
+                    {cards && (
+                      <div role="row" className="border-y border-border bg-bg px-3 py-2 sm:pl-[108px]">
+                        <div role="gridcell" className="flex max-w-3xl flex-col gap-2">
+                          {cards.map((c) => (
+                            <CommentCard key={c.id} card={c} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </Fragment>
+                );
+              })}
             </div>
           ))}
         </div>

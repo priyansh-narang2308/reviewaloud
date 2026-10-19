@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Workspace } from "@/components/workspace/workspace";
 import { WorkspaceError } from "@/components/workspace/workspace-error";
 import { loadWorkspace } from "@/lib/workspace/load";
+import { missingFor } from "@/lib/env";
 
 type Params = { owner: string; repo: string; n: string };
 
@@ -23,5 +24,5 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   if (!ref) return <WorkspaceError kind="not_found" message="That isn't a valid pull request address." />;
   const result = await loadWorkspace(ref);
   if (!result.ok) return <WorkspaceError kind={result.kind} message={result.message} resetAt={result.resetAt} />;
-  return <Workspace data={result.data} />;
+  return <Workspace data={result.data} aiEnabled={missingFor("ai").length === 0} />;
 }

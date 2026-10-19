@@ -23,6 +23,8 @@ Results are recorded only after a run. "—" means not yet run.
 | Selection | unit | `lib/workspace/selection.test.ts` | 4/4 pass |
 | Review store | unit | `lib/store/review-store.test.ts` | 10/10 pass |
 | Pin & Speak | e2e (simulated paste) | `e2e/pin-and-speak.spec.ts` | 5/5 pass |
+| AI client + tidy guards + limiter | unit | `lib/ai/ai.test.ts` | 12/12 pass |
+| Cards, move, shortcuts, tidy API | e2e | `e2e/cards.spec.ts` | 10/10 pass |
 | Workspace + landing | e2e (live sandbox PR) | `e2e/workspace.spec.ts` | 9/9 pass |
 | Smoke      | e2e  | `e2e/smoke.spec.ts` | 1/1 pass |
 | Capture spike | e2e | `e2e/capture-spike.spec.ts` | 2/2 pass |
@@ -40,3 +42,5 @@ Not run yet. Will report confusion matrix and false-addressed rate exactly as me
 - 2026-10-19 · Tasks 7–8: `pnpm test` → 61/61 (parser 18, anchors 20). Anchors produced from parsed real patches equal the six placements GitHub accepted live in Task 5. Typecheck + lint clean.
 - 2026-10-19 · Tasks 9–10: `pnpm test` 79/79; `pnpm test:e2e` 12/12 (run with a read token in env). Browser check: sandbox PR renders with GitHub's numbering (auth.ts L12–15 deleted, R12 added); shift-click gives `src/cart.ts R20–R22` (= live-verified range D). Found and fixed: (1) e2e raced hydration → `data-hydrated` marker; (2) form submit before hydration did a native GET → added `/open` no-JS fallback (tested with JS disabled); (3) `next build` failed on uncached `searchParams` with cacheComponents → moved into `<Suspense>`. Observed live: unauthenticated GitHub limit (60/h) exhausted during test runs; rate-limit error state rendered correctly. **Not measured yet:** 5k-line diff scroll performance.
 - 2026-10-19 · Tasks 11–12: `pnpm test` 89/89; `pnpm test:e2e` 17/17 (now using `GITHUB_PUBLIC_READ_TOKEN` from `.env.local`). Browser check: click on auth.ts R12 pins it and focuses the capture field.
+- 2026-10-19 · Tasks 13–16: `pnpm test` 101/101; `pnpm test:e2e` 27/27. Found and fixed: global Esc handler called preventDefault and blocked native dialog close. Test bug fixed: "AI configured?" now asked from the server (e2e runner env ≠ server env).
+- 2026-10-19 · Live tidy (OpenRouter free) on auth.ts R12, dictation-style input with fillers → "The non-null assertion on user.profile will crash if the user has no profile; we should keep the old check." type=blocking. No invented identifiers. Latency observed: ~40 s (first try, fallback model) and 3.2 s server time (second). n=2, not a benchmark.
