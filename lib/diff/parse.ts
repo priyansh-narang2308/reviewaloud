@@ -44,7 +44,12 @@ export class PatchParseError extends Error {
 
 const HUNK_RE = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@ ?(.*)$/;
 
-export function parsePatch(patch: string | null | undefined): ParsedPatch {
+/**
+ * `allowTruncated` accepts a final hunk that ends early. GitHub's per-comment
+ * `diff_hunk` is cut off at the commented line, so it never reaches its
+ * declared counts. Full PR patches are always parsed strictly.
+ */
+export function parsePatch(patch: string | null | undefined, opts: { allowTruncated?: boolean } = {}): ParsedPatch {
   const hunks: Hunk[] = [];
   const lines: DiffLine[] = [];
   if (!patch) return { hunks, lines };
@@ -119,7 +124,7 @@ export function parsePatch(patch: string | null | undefined): ParsedPatch {
     current.lineRange = [current.lineRange[0], lines.length - 1];
   });
 
-  if (current && (oldLeft > 0 || newLeft > 0)) {
+  if (current && (oldLeft > 0 || newLeft > 0) && !opts.allowTruncated) {
     throw new PatchParseError("Patch ended before the last hunk's declared line counts", raw.length);
   }
   return { hunks, lines };

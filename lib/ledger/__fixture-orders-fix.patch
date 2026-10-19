@@ -1,0 +1,27 @@
+@@ -3,10 +3,12 @@ import { type Cart, discountRate, subtotal } from "./cart";
+ export type Order = { id: string; cart: Cart; placedAt: string };
+ 
+ export function orderTotal(order: Order): number {
+-  return subtotal(order.cart);
++  const base = subtotal(order.cart);
++  return base - base * discountRate(order.cart.discountCode);
+ }
+ 
+ export function averageOrderValue(orders: Order[]): number {
++  // Average value across all orders.
+   const sum = orders.reduce((n, o) => n + orderTotal(o), 0);
+   return sum / orders.length;
+ }
+@@ -16,10 +18,11 @@ export function recentOrders(orders: Order[]): Order[] {
+ }
+ 
+ export function roundedTotal(order: Order): number {
+-  return Math.round(orderTotal(order) * 100) / 100;
++  return orderTotal(order);
+ }
+ 
+ export function addLine(order: Order, quantity: number, unitPrice: number): Order {
++  if (quantity <= 0) throw new Error("Quantity must be positive");
+   order.cart.items.push({ sku: `line-${order.cart.items.length}`, name: "custom", quantity, unitPrice });
+   return order;
+ }

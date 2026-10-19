@@ -96,6 +96,12 @@ describe("parsePatch edge cases from real git output", () => {
     expect(lines[1]).toMatchObject({ kind: "ctx", text: "", oldNo: 2, newNo: 2 });
   });
 
+  it("accepts a truncated final hunk only when asked (GitHub comment diff_hunk)", () => {
+    const hunk = "@@ -18,3 +18,3 @@\n a\n b\n-c";
+    expect(() => parsePatch(hunk)).toThrow(PatchParseError);
+    expect(parsePatch(hunk, { allowTruncated: true }).lines.map((l) => l.kind)).toEqual(["ctx", "ctx", "del"]);
+  });
+
   it("returns empty results for a missing patch (binary or too large)", () => {
     expect(parsePatch(null)).toEqual({ hunks: [], lines: [] });
     expect(parsePatch("")).toEqual({ hunks: [], lines: [] });

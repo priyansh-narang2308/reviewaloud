@@ -45,6 +45,11 @@ describe("structuredCompletion", () => {
     expect(await structuredCompletion({ apiKey: "k", fetch: f }, req(["a"]))).toMatchObject({ ok: true, value: { ok: false } });
   });
 
+  it("extracts a JSON object surrounded by prose", async () => {
+    const { f } = fakeOpenRouter({ a: [{ content: 'Here is the result:\n{"ok":true}\nHope that helps.' }] });
+    expect(await structuredCompletion({ apiKey: "k", fetch: f }, req(["a"]))).toMatchObject({ ok: true, value: { ok: true } });
+  });
+
   it("repairs once with the validation error, then succeeds", async () => {
     const { f, calls } = fakeOpenRouter({ a: [{ content: '{"ok":"yes"}' }, { content: '{"ok":true}' }] });
     const r = await structuredCompletion({ apiKey: "k", fetch: f }, req(["a"]));

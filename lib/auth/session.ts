@@ -16,7 +16,21 @@ export type SessionData = {
   /** OAuth CSRF state + where to return after login. */
   oauthState?: string;
   returnTo?: string;
+  /** Daily AI call budget (free-tier models are rate-limited per key). */
+  aiDay?: string;
+  aiCount?: number;
 };
+
+/** Consumes one AI call from today's per-session budget. */
+export function takeAiBudget(s: SessionData, cap: number, today = new Date().toISOString().slice(0, 10)): boolean {
+  if (s.aiDay !== today) {
+    s.aiDay = today;
+    s.aiCount = 0;
+  }
+  if ((s.aiCount ?? 0) >= cap) return false;
+  s.aiCount = (s.aiCount ?? 0) + 1;
+  return true;
+}
 
 export async function getSession(): Promise<IronSession<SessionData>> {
   requireFeature("session");

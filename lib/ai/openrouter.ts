@@ -80,10 +80,17 @@ async function callOnce(deps: Deps, model: string, req: StructuredRequest<unknow
   return content;
 }
 
-function parseJson(content: string): unknown {
-  // Some models wrap JSON in a fence despite the schema; strip it.
+export function parseJson(content: string): unknown {
+  // Some models wrap JSON in a fence or add prose around it despite the schema.
   const trimmed = content.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
-  return JSON.parse(trimmed);
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    const start = trimmed.indexOf("{");
+    const end = trimmed.lastIndexOf("}");
+    if (start >= 0 && end > start) return JSON.parse(trimmed.slice(start, end + 1));
+    throw new Error("not json");
+  }
 }
 
 export async function structuredCompletion<T>(deps: Deps, req: StructuredRequest<T>): Promise<StructuredResult<T>> {
