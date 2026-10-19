@@ -2,6 +2,8 @@
 
 > **Change 2026-10-19:** AI provider switched from Anthropic to **OpenRouter free models** (no paid API). Free tier: 20 req/min, 50 req/day ([limits](https://openrouter.ai/docs/api/reference/limits)). Default model `nvidia/nemotron-3.5-super-vl:free`, fallbacks `nvidia/nemotron-3-super-120b-a12b:free`, `dots-studio/dots-3-note-preview:free` (all support structured outputs, checked 2026-10-19). Consequences: classification + verification merged into **one call per comment**; verdicts cached per (comment, head SHA); deterministic short-circuits before any call; configurable model + fallback chain; public demo uses recorded live output so judges don't consume quota.
 
+> **Change 2026-10-20 (positioning):** "ReviewAloud: the accountability layer between human reviewers and AI coding agents." Tasks 30–32 extended with an **agent follow-through score** (per PR and across PRs) and a **hand-back loop** (follow-up reply with optional @agent mention + auto re-check on new commits). Task count unchanged (40).
+
 ## Context
 
 Hackathon build for WeMakeDevs × Wispr Flow "No Hands" (Builders track). Deadline **Fri 30 Oct 2026, 11:59 pm IST**. Rubric: real problem 30 / meaningful Wispr 30 / works via live link 25 / 2-min demo 15.

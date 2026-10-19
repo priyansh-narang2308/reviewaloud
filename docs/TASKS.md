@@ -25,17 +25,17 @@ Status: TODO · IN PROGRESS · BLOCKED · DONE. Full task definitions: [IMPLEMEN
 | 19  | Create pending review                  | P0  | DONE | Pending review create (same-origin, signed-in, allowlist, existing-pending detection). Live: placed on intended lines with type prefixes |
 | 20  | Submit review                          | P0  | DONE | Explicit confirm step, COMMENT / REQUEST_CHANGES (disabled on own PR), idempotent submit, discard, client double-click lock, GitHub draft record survives reload |
 | 21  | Errors & recovery                      | P0  | DONE | 401/403/404/422/429/network mapped to actionable messages (sign-in link, install-app link); drafts only removed after successful submit |
-| 22  | Review history gather                  | P0  | TODO    |                                                                                |
-| 23  | Commit comparison + anchor tracking    | P0  | TODO    |                                                                                |
-| 24  | Intent classification + short-circuits | P0  | TODO    |                                                                                |
-| 25  | Verifier + structured output           | P0  | TODO    | G4                                                                             |
-| 26  | Evidence validation                    | P0  | TODO    |                                                                                |
-| 27  | Ledger UI + evidence inspector         | P0  | TODO    |                                                                                |
-| 28  | CI context                             | P1  | TODO    |                                                                                |
-| 29  | Overrides + consent + budget           | P0  | TODO    |                                                                                |
-| 30  | Unresolved queue                       | P0  | TODO    |                                                                                |
-| 31  | Fix-instruction generator              | P0  | TODO    |                                                                                |
-| 32  | Thread reply + re-check                | P1  | TODO    | V2 full loop                                                                   |
+| 22  | Review history gather                  | P0  | DONE | Review comments (paginated), replies by `in_reply_to_id`, GraphQL thread isResolved/isOutdated (degrades if unavailable), bots excluded, reviewer filter |
+| 23  | Commit comparison + anchor tracking    | P0  | DONE | compare(original_commit…head), line mapping through patches, region-touched + line/file-deleted signals, head excerpts ±25 + up to 3 other changed files. Bug fixed: GitHub `diff_hunk` is truncated → lenient parse for comment hunks |
+| 24  | Intent classification + short-circuits | P0  | DONE | Classification merged into the single verify call (free-tier quota). Deterministic short-circuits: no commits + no reply → unresolved / reply needed, praise → no action; 0 AI calls |
+| 25  | Verifier + structured output           | P0  | DONE | Strict JSON schema, Zod, repair + model fallback, tolerant JSON extraction, untrusted-data delimiters, agent claims not trusted. G4 live: 5/5 planted cases, 0 false-addressed |
+| 26  | Evidence validation                    | P0  | DONE | Quotes verified verbatim at cited lines (±1) or in the cited reply; unverifiable dropped; Addressed needs verified support and no verified contradiction, else Needs human check |
+| 27  | Ledger UI + evidence inspector         | P0  | DONE | Promise Ledger tab (`#ledger` deep link): status chips, your words, rationale, still missing, verified evidence, how-decided details, stale-check badge, sequential Check all, cached per head |
+| 28  | CI context                             | P1  | DONE | Check runs + commit status on head shown as a note: "CI passing doesn't mean the request was met"; never changes a verdict |
+| 29  | Overrides + consent + budget           | P0  | DONE | Reviewer override (4 statuses, labelled, persisted), private-repo consent prompt (server enforces 412), per-session daily AI cap in the session cookie + per-IP limit; sign-in required to spend AI quota |
+| 30  | Unresolved queue                       | P0  | DONE | Follow-through score: kept/total with open, reply, unclear, unchecked; cross-PR history and per-PR-author totals in localStorage (the "agent follow-through score") |
+| 31  | Fix-instruction generator              | P0  | DONE | Deterministic follow-up from your verbatim words + verified contradicting code + still-missing; optional @claude/@copilot mention; Copy for Claude Code |
+| 32  | Thread reply + re-check                | P1  | DONE | Reply on the GitHub thread after explicit confirm; head polled every 30 s, "New commits" banner, auto re-check of not-yet-kept requests (toggle). Live GitHub reply tested earlier via routes; UI tested with mocks |
 | 33  | Design system + landing                | P1  | TODO    |                                                                                |
 | 34  | Public demo                            | P0  | TODO    |                                                                                |
 | 35  | Accessibility + responsive             | P1  | TODO    |                                                                                |

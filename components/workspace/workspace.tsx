@@ -5,6 +5,7 @@ import { AuthControl } from "@/components/auth/auth-control";
 import { useViewer } from "@/components/auth/use-viewer";
 import { CapturePanel } from "@/components/capture/capture-panel";
 import { PublishDialog } from "@/components/publish/publish-dialog";
+import { LedgerView } from "@/components/ledger/ledger-view";
 import { useReviewStore } from "@/components/capture/use-review-store";
 import { type CardActions, CardActionsContext, type TidyState } from "@/components/cards/card-actions";
 import { DraftsList } from "@/components/cards/drafts-list";
@@ -35,11 +36,19 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [publishOpen, setPublishOpen] = useState(false);
+  const [tabChoice, setTabChoice] = useState<"review" | "ledger" | null>(null);
   const [viewer, refreshViewer] = useViewer();
   const captureRef = useRef<HTMLTextAreaElement>(null);
   const [store, review] = useReviewStore(data.ref);
   // Marks when event handlers are live (used by e2e tests to avoid racing hydration).
   const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  const returnTo = `/pr/${data.ref.owner}/${data.ref.repo}/${data.ref.number}`;
+  // `#ledger` deep-links to the Promise Ledger (read after hydration only).
+  const tab = tabChoice ?? (hydrated && window.location.hash === "#ledger" ? "ledger" : "review");
+  const pickTab = (t: "review" | "ledger") => {
+    setTabChoice(t);
+    history.replaceState(null, "", t === "ledger" ? "#ledger" : window.location.pathname + window.location.search);
+  };
 
   const fileByPath = useMemo(() => new Map(files.map((f) => [f.path, f])), [files]);
   const result = useMemo(() => {
@@ -115,6 +124,7 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
       if (isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return;
       // Let open dialogs handle their own keys (Esc closes them natively).
       if (document.querySelector("dialog[open]")) return;
+      if (tab === "ledger" && e.key !== "?") return;
       const file = files[currentFile];
       const lines = file?.parsed?.lines;
       const at = selection?.path === file?.path ? selection.focusIdx : -1;
@@ -137,7 +147,7 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [currentFile, files, goToFile, moveTo, selection, movingId]);
+  }, [currentFile, files, goToFile, moveTo, selection, movingId, tab]);
 
   const onSave = useCallback(
     (body: string, source: CaptureSource) => {
@@ -211,7 +221,6 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
   );
 
   const moving = movingId ? review.cards.find((c) => c.id === movingId) : undefined;
-  const returnTo = `/pr/${data.ref.owner}/${data.ref.repo}/${data.ref.number}`;
   // Shown once after an OAuth redirect; read client-side only.
   const authError = hydrated ? new URLSearchParams(window.location.search).get("auth_error") : null;
   const githubFilesUrl = `${pr.htmlUrl}/files`;
@@ -237,6 +246,29 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
             </>
           }
         />
+        <nav aria-label="Workspace" className="border-b border-border bg-surface">
+          <div className="mx-auto flex max-w-[1600px] gap-1 px-4 lg:px-6" role="tablist">
+            {(
+              [
+                ["review", "Review", review.cards.length ? `${review.cards.length} draft${review.cards.length === 1 ? "" : "s"}` : null],
+                ["ledger", "Promise Ledger", "did the fixes land?"],
+              ] as const
+            ).map(([id, label, hint]) => (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                aria-selected={tab === id}
+                data-testid={`tab-${id}`}
+                onClick={() => pickTab(id)}
+                className={`-mb-px border-b-2 px-3 py-2.5 text-sm ${tab === id ? "border-accent text-text" : "border-transparent text-muted hover:text-text"}`}
+              >
+                {label}
+                {hint && <span className="ml-2 text-xs text-faint">{hint}</span>}
+              </button>
+            ))}
+          </div>
+        </nav>
         {authError && (
           <p role="alert" className="border-b border-rose-500/30 bg-rose-500/10 px-6 py-2 text-sm">
             {authError}
@@ -247,6 +279,11 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
             GitHub lists at most 3,000 files per pull request; some files aren&apos;t shown.
           </p>
         )}
+        {tab === "ledger" ? (
+          <div className="mx-auto w-full max-w-[1100px] flex-1 px-4 py-6 lg:px-6">
+            <LedgerView prRef={data.ref} prUrl={pr.htmlUrl} viewer={viewer} returnTo={`${returnTo}#ledger`} />
+          </div>
+        ) : (
         <div className="mx-auto grid w-full max-w-[1600px] flex-1 gap-6 px-4 py-6 lg:grid-cols-[280px_minmax(0,1fr)] lg:px-6">
           <div className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
             <FileTree files={files} current={currentFile} onPick={goToFile} />
@@ -279,6 +316,7 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
             )}
           </main>
         </div>
+        )}
 
         {toast && (
           <div role="status" className="fixed bottom-28 left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 rounded-lg border border-border-strong bg-surface-2 px-4 py-2 text-sm shadow-lg">
@@ -298,7 +336,7 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
           </div>
         )}
 
-        {moving ? (
+        {tab === "ledger" ? null : moving ? (
           <section aria-label="Move comment" className="sticky bottom-0 z-20 border-t border-accent/50 bg-surface/95 backdrop-blur">
             <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-3 px-4 py-3 text-sm lg:px-6">
               <span data-testid="move-bar">
