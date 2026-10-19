@@ -25,6 +25,9 @@ Results are recorded only after a run. "—" means not yet run.
 | Pin & Speak | e2e (simulated paste) | `e2e/pin-and-speak.spec.ts` | 5/5 pass |
 | AI client + tidy guards + limiter | unit | `lib/ai/ai.test.ts` | 12/12 pass |
 | Cards, move, shortcuts, tidy API | e2e | `e2e/cards.spec.ts` | 10/10 pass |
+| Publish planner, session helpers, review API | unit | `lib/publish/publish.test.ts` | 8/8 pass |
+| Publish dialog flows (API mocked) | e2e | `e2e/publish.spec.ts` | 8/8 pass |
+| Publish routes vs real GitHub | live script | `scripts/live-routes-check.ts` | 15/15 pass |
 | Workspace + landing | e2e (live sandbox PR) | `e2e/workspace.spec.ts` | 9/9 pass |
 | Smoke      | e2e  | `e2e/smoke.spec.ts` | 1/1 pass |
 | Capture spike | e2e | `e2e/capture-spike.spec.ts` | 2/2 pass |
@@ -44,3 +47,4 @@ Not run yet. Will report confusion matrix and false-addressed rate exactly as me
 - 2026-10-19 · Tasks 11–12: `pnpm test` 89/89; `pnpm test:e2e` 17/17 (now using `GITHUB_PUBLIC_READ_TOKEN` from `.env.local`). Browser check: click on auth.ts R12 pins it and focuses the capture field.
 - 2026-10-19 · Tasks 13–16: `pnpm test` 101/101; `pnpm test:e2e` 27/27. Found and fixed: global Esc handler called preventDefault and blocked native dialog close. Test bug fixed: "AI configured?" now asked from the server (e2e runner env ≠ server env).
 - 2026-10-19 · Live tidy (OpenRouter free) on auth.ts R12, dictation-style input with fillers → "The non-null assertion on user.profile will crash if the user has no profile; we should keep the old check." type=blocking. No invented identifiers. Latency observed: ~40 s (first try, fallback model) and 3.2 s server time (second). n=2, not a benchmark.
+- 2026-10-19 · Tasks 17–21: `pnpm test` 109/109; `pnpm test:e2e` 35/35; `next build` OK. `scripts/live-routes-check.ts` against the running dev server + sandbox PR (session cookie sealed locally with the gh OAuth token): 15/15 PASS — 401 without session, 403 foreign origin, 403 outside allowlist, 409 stale anchor (no write), 400 empty, create PENDING, 409 pending_exists, discard, placement cart.ts LEFT 20 "**Question:**" and auth.ts RIGHT 12 "**Blocking:**", 422 REQUEST_CHANGES on own PR surfaced, submit COMMENTED, idempotent resubmit, 409 discard after submit. Script bugs found: `/reviews/{id}/comments` omits line/side, and the PR comment list excludes pending comments → placement checked after submit. **Not yet verified:** the GitHub App OAuth sign-in itself and writes with the App's user token (G3).

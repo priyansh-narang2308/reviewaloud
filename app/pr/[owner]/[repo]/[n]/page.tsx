@@ -3,6 +3,7 @@ import { Workspace } from "@/components/workspace/workspace";
 import { WorkspaceError } from "@/components/workspace/workspace-error";
 import { loadWorkspace } from "@/lib/workspace/load";
 import { missingFor } from "@/lib/env";
+import { readOnlyUserToken } from "@/lib/auth/session";
 
 type Params = { owner: string; repo: string; n: string };
 
@@ -22,7 +23,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 export default async function Page({ params }: { params: Promise<Params> }) {
   const ref = toRef(await params);
   if (!ref) return <WorkspaceError kind="not_found" message="That isn't a valid pull request address." />;
-  const result = await loadWorkspace(ref);
+  // Signed-in users can open private PRs they can access; others use the public read token.
+  const result = await loadWorkspace(ref, await readOnlyUserToken());
   if (!result.ok) return <WorkspaceError kind={result.kind} message={result.message} resetAt={result.resetAt} />;
   return <Workspace data={result.data} aiEnabled={missingFor("ai").length === 0} />;
 }

@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { AuthControl } from "@/components/auth/auth-control";
+import { useViewer } from "@/components/auth/use-viewer";
 import { CapturePanel } from "@/components/capture/capture-panel";
+import { PublishDialog } from "@/components/publish/publish-dialog";
 import { useReviewStore } from "@/components/capture/use-review-store";
 import { type CardActions, CardActionsContext, type TidyState } from "@/components/cards/card-actions";
 import { DraftsList } from "@/components/cards/drafts-list";
@@ -31,6 +34,8 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
   const [tidy, setTidy] = useState<ReadonlyMap<string, TidyState>>(new Map());
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const [viewer, refreshViewer] = useViewer();
   const captureRef = useRef<HTMLTextAreaElement>(null);
   const [store, review] = useReviewStore(data.ref);
   // Marks when event handlers are live (used by e2e tests to avoid racing hydration).
@@ -206,12 +211,37 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
   );
 
   const moving = movingId ? review.cards.find((c) => c.id === movingId) : undefined;
+  const returnTo = `/pr/${data.ref.owner}/${data.ref.repo}/${data.ref.number}`;
+  // Shown once after an OAuth redirect; read client-side only.
+  const authError = hydrated ? new URLSearchParams(window.location.search).get("auth_error") : null;
   const githubFilesUrl = `${pr.htmlUrl}/files`;
 
   return (
     <CardActionsContext.Provider value={actions}>
       <div className="flex min-h-screen flex-col" data-hydrated={hydrated || undefined}>
-        <PrHeader pr={pr} fileCount={files.length} />
+        <PrHeader
+          pr={pr}
+          fileCount={files.length}
+          right={
+            <>
+              <AuthControl state={viewer} returnTo={returnTo} onSignedOut={refreshViewer} />
+              <button
+                type="button"
+                data-testid="open-publish"
+                disabled={review.cards.length === 0}
+                onClick={() => setPublishOpen(true)}
+                className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-black disabled:opacity-40"
+              >
+                Publish review{review.cards.length ? ` (${review.cards.length})` : ""}
+              </button>
+            </>
+          }
+        />
+        {authError && (
+          <p role="alert" className="border-b border-rose-500/30 bg-rose-500/10 px-6 py-2 text-sm">
+            {authError}
+          </p>
+        )}
         {data.truncated && (
           <p role="status" className="border-b border-border bg-surface-2 px-6 py-2 text-sm text-muted">
             GitHub lists at most 3,000 files per pull request; some files aren&apos;t shown.
@@ -315,6 +345,23 @@ export function Workspace({ data, aiEnabled }: { data: WorkspaceData; aiEnabled:
           />
         )}
         <ShortcutsDialog open={showShortcuts} onClose={() => setShowShortcuts(false)} />
+        <PublishDialog
+          open={publishOpen}
+          onClose={() => setPublishOpen(false)}
+          prRef={data.ref}
+          repoLabel={pr.repoFullName}
+          prAuthor={pr.author?.login ?? null}
+          cards={review.cards}
+          outdatedIds={outdated}
+          viewer={viewer}
+          returnTo={returnTo}
+          onApplyMoved={(moved) => moved.forEach((m) => store.update(m.cardId, { anchor: m.anchor }))}
+          onSubmitted={(ids) => ids.forEach((id) => store.remove(id))}
+          onJump={(c) => {
+            setPublishOpen(false);
+            jumpToCard(c);
+          }}
+        />
       </div>
     </CardActionsContext.Provider>
   );

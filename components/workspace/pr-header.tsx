@@ -12,7 +12,7 @@ function StateBadge({ pr }: { pr: PullRequest }) {
   return <span className={`rounded-full border px-2 py-0.5 text-xs ${cls}`}>{label}</span>;
 }
 
-export function PrHeader({ pr, fileCount }: { pr: PullRequest; fileCount: number }) {
+export function PrHeader({ pr, fileCount, right }: { pr: PullRequest; fileCount: number; right?: React.ReactNode }) {
   return (
     <header className="border-b border-border bg-surface">
       <div className="mx-auto flex max-w-[1600px] flex-col gap-2 px-4 py-4 lg:px-6">
@@ -22,9 +22,7 @@ export function PrHeader({ pr, fileCount }: { pr: PullRequest; fileCount: number
           </Link>
           <span className="text-faint">/</span>
           <span className="font-mono">{pr.repoFullName}</span>
-          <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-xs" title="Sign-in arrives with publishing">
-            Public preview · read-only
-          </span>
+          <span className="ml-auto flex items-center gap-3">{right}</span>
         </div>
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h1 className="text-xl font-semibold tracking-tight">

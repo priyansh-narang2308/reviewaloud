@@ -10,7 +10,7 @@ export type CommentType = (typeof COMMENT_TYPES)[number];
 export type CaptureSource = "paste" | "typed" | "mixed";
 
 const side = z.enum(["LEFT", "RIGHT"]);
-const anchorSchema = z.object({
+export const anchorSchema = z.object({
   path: z.string().min(1),
   commitId: z.string().min(1),
   side,
