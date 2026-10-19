@@ -6,8 +6,8 @@ Status: TODO · IN PROGRESS · BLOCKED · DONE. Full task definitions: [IMPLEMEN
 | --- | -------------------------------------- | --- | ------- | ------------------------------------------------------------------------------ |
 | 1   | Scaffold repo                          | P0  | DONE    | Next 16.4.2, React 19.3, Tailwind 4, Zod 4, Vitest 5, Playwright 1.64          |
 | 2   | Architecture docs + env schema         | P0  | DONE    | All env vars optional at boot; features fail naming the missing key            |
-| 3   | Sandbox + GitHub App setup             | P0  | BLOCKED | Needs: gh on personal account, OK to create 2 public repos, GitHub App created |
-| 4   | Wispr capture spike                    | P0  | TODO    | Needs you to dictate (G1)                                                      |
+| 3   | Sandbox + GitHub App setup             | P0  | IN PROGRESS | Repos created; sandbox PR #1 live. Remaining: you create the GitHub App + public-read token |
+| 4   | Wispr capture spike                    | P0  | IN PROGRESS | `/spike/capture` built; simulated-paste e2e passes. Remaining: your 10 real Wispr dictations (G1) |
 | 5   | GitHub write spike                     | P0  | TODO    | Needs Task 3 (G2, G3)                                                          |
 | 6   | GitHub client + PR fetch               | P0  | TODO    |                                                                                |
 | 7   | Unified diff parser                    | P0  | TODO    |                                                                                |
