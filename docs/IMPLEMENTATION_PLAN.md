@@ -1,5 +1,7 @@
 # ReviewAloud — Implementation Plan (v1)
 
+> **Change 2026-10-19:** AI provider switched from Anthropic to **OpenRouter free models** (no paid API). Free tier: 20 req/min, 50 req/day ([limits](https://openrouter.ai/docs/api/reference/limits)). Consequences: classification + verification merged into **one call per comment**; verdicts cached per (comment, head SHA); deterministic short-circuits before any call; configurable model + fallback chain; public demo uses recorded live output so judges don't consume quota.
+
 ## Context
 
 Hackathon build for WeMakeDevs × Wispr Flow "No Hands" (Builders track). Deadline **Fri 30 Oct 2026, 11:59 pm IST**. Rubric: real problem 30 / meaningful Wispr 30 / works via live link 25 / 2-min demo 15.
@@ -46,7 +48,7 @@ docs/ IMPLEMENTATION_PLAN.md TASKS.md ARCHITECTURE.md TEST_MATRIX.md
 
 ## Key designs
 
-**Diff/anchors.** Parse each file's `patch` from `GET /pulls/{n}/files` (paginate, ≤3000 files). Per line: `{kind: add|del|ctx, oldNo, newNo, hunkIdx}`. Anchor = `{path, side: del→LEFT else RIGHT, line: LEFT?oldNo:newNo, startLine?, startSide?, commitId: headSha}`. Ranges allowed only within one hunk. Missing `patch` (binary/too large) ⇒ file-level comment or "view on GitHub". Before publish: re-fetch head SHA; if moved, re-validate every anchor against new diff, flag outdated ones.
+**Diff/anchors.** Parse each file's `patch` from `GET /pulls/{n}/files` (paginate, ≤3000 files). Per line: `{kind: add|del|ctx, oldNo, newNo, hunkIdx}`. Anchor = `{path, side: del→LEFT else RIGHT, line: LEFT?oldNo:newNo, startLine?, startSide?, commitId: headSha}`. Ranges allowed only within one hunk (our UI rule; GitHub itself accepted a cross-hunk range in the Task 5 live check). Missing `patch` (binary/too large) ⇒ file-level comment or "view on GitHub". Before publish: re-fetch head SHA; if moved, re-validate every anchor against new diff, flag outdated ones.
 
 **Pin & Speak.** Click line (shift-click = range, `j/k` line nav, `[ ]` file nav, `c` focus capture). Selecting stores anchor in state **then** focuses the capture textarea; focus never mutates the anchor. States shown: _No anchor_ → _Anchor set · dictate or type_ → _Text received_ (on `insertFromPaste`) → _Saved_. `⌘↵` saves card, `Esc` cancels. Multiline preserved. Same textarea is the typing fallback. Cards: edit, delete, re-anchor, type (blocking/suggestion/question/nit/praise, user-set; AI may propose).
 

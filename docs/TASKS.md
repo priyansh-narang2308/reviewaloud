@@ -6,10 +6,10 @@ Status: TODO · IN PROGRESS · BLOCKED · DONE. Full task definitions: [IMPLEMEN
 | --- | -------------------------------------- | --- | ------- | ------------------------------------------------------------------------------ |
 | 1   | Scaffold repo                          | P0  | DONE    | Next 16.4.2, React 19.3, Tailwind 4, Zod 4, Vitest 5, Playwright 1.64          |
 | 2   | Architecture docs + env schema         | P0  | DONE    | All env vars optional at boot; features fail naming the missing key            |
-| 3   | Sandbox + GitHub App setup             | P0  | IN PROGRESS | Repos created; sandbox PR #1 live. Remaining: you create the GitHub App + public-read token |
+| 3   | Sandbox + GitHub App setup             | P0  | IN PROGRESS | Repos + sandbox PR #1 done. Remaining (you): GitHub App, public-read token, OpenRouter key |
 | 4   | Wispr capture spike                    | P0  | IN PROGRESS | `/spike/capture` built; simulated-paste e2e passes. Remaining: your 10 real Wispr dictations (G1) |
-| 5   | GitHub write spike                     | P0  | TODO    | Needs Task 3 (G2, G3)                                                          |
-| 6   | GitHub client + PR fetch               | P0  | TODO    |                                                                                |
+| 5   | GitHub write spike                     | P0  | DONE | G2 PASS (6/6 anchors). Pending hidden from others, 2nd pending → 422, submit + reply OK. G3 partial: tested with gh OAuth token; GitHub App token in Task 17. Found: GitHub accepts cross-hunk ranges and LEFT on context lines |
+| 6   | GitHub client + PR fetch               | P0  | DONE | Typed errors, Link pagination (≤3000 files), Zod-validated responses, recorded-fixture tests. No ETag cache (deferred). Used injected fetch instead of MSW |
 | 7   | Unified diff parser                    | P0  | TODO    |                                                                                |
 | 8   | Anchor mapper + validator              | P0  | TODO    |                                                                                |
 | 9   | Diff viewer                            | P0  | TODO    |                                                                                |

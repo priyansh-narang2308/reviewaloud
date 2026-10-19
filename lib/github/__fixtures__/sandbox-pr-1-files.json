@@ -1,0 +1,50 @@
+[
+  {
+    "sha": "130b3eb20c6b191848bb7f1cc5468d29f783e4bf",
+    "filename": "src/auth.ts",
+    "status": "modified",
+    "additions": 1,
+    "deletions": 4,
+    "changes": 5,
+    "blob_url": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/blob/518baaa82bd86dfbcc6d22dd3e03477115d28716/src%2Fauth.ts",
+    "raw_url": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/raw/518baaa82bd86dfbcc6d22dd3e03477115d28716/src%2Fauth.ts",
+    "contents_url": "https://api.github.com/repos/priyansh-narang2308/reviewaloud-sandbox/contents/src%2Fauth.ts?ref=518baaa82bd86dfbcc6d22dd3e03477115d28716",
+    "patch": "@@ -9,8 +9,5 @@ export function isAdmin(user: User): boolean {\n }\n \n export function displayName(user: User): string {\n-  if (user.profile && user.profile.name) {\n-    return user.profile.name;\n-  }\n-  return user.email;\n+  return user.profile!.name || user.email;\n }"
+  },
+  {
+    "sha": "29dc0b74b61ede694e47106fccad2ffee2a40c2a",
+    "filename": "src/cart.ts",
+    "status": "modified",
+    "additions": 10,
+    "deletions": 2,
+    "changes": 12,
+    "blob_url": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/blob/518baaa82bd86dfbcc6d22dd3e03477115d28716/src%2Fcart.ts",
+    "raw_url": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/raw/518baaa82bd86dfbcc6d22dd3e03477115d28716/src%2Fcart.ts",
+    "contents_url": "https://api.github.com/repos/priyansh-narang2308/reviewaloud-sandbox/contents/src%2Fcart.ts?ref=518baaa82bd86dfbcc6d22dd3e03477115d28716",
+    "patch": "@@ -14,10 +14,15 @@ export function createCart(): Cart {\n   return { items: [] };\n }\n \n+const MAX_QUANTITY = 99;\n+\n export function addItem(cart: Cart, item: CartItem): Cart {\n+  if (item.quantity <= 0) {\n+    throw new Error(\"Quantity must be positive\");\n+  }\n   const existing = cart.items.find((i) => i.sku === item.sku);\n   if (existing) {\n-    existing.quantity += item.quantity;\n+    existing.quantity = Math.min(existing.quantity + item.quantity, MAX_QUANTITY);\n     return cart;\n   }\n   cart.items.push(item);\n@@ -55,8 +60,11 @@ export function discountRate(code?: string): number {\n   return DISCOUNTS[code] ?? 0;\n }\n \n+const GST_RATE = 0.18;\n+\n export function total(cart: Cart): number {\n   const base = subtotal(cart);\n   const discount = base * discountRate(cart.discountCode);\n-  return base - discount;\n+  const taxable = base - discount;\n+  return taxable + taxable * GST_RATE;\n }"
+  },
+  {
+    "sha": "d8ae2048b45d27228fd4b016258032959a57737a",
+    "filename": "src/checkout.ts",
+    "status": "added",
+    "additions": 13,
+    "deletions": 0,
+    "changes": 13,
+    "blob_url": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/blob/518baaa82bd86dfbcc6d22dd3e03477115d28716/src%2Fcheckout.ts",
+    "raw_url": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/raw/518baaa82bd86dfbcc6d22dd3e03477115d28716/src%2Fcheckout.ts",
+    "contents_url": "https://api.github.com/repos/priyansh-narang2308/reviewaloud-sandbox/contents/src%2Fcheckout.ts?ref=518baaa82bd86dfbcc6d22dd3e03477115d28716",
+    "patch": "@@ -0,0 +1,13 @@\n+import { type Cart, itemCount, subtotal, total } from \"./cart\";\n+import { type User, displayName } from \"./auth\";\n+import { formatPrice, formatQuantity } from \"./format\";\n+\n+export function checkoutSummary(cart: Cart, user: User): string {\n+  const lines = [\n+    `Order for ${displayName(user)}`,\n+    `${formatQuantity(itemCount(cart))}`,\n+    `Subtotal: ${formatPrice(subtotal(cart))}`,\n+    `Total (incl. GST): ${formatPrice(total(cart))}`,\n+  ];\n+  return lines.join(\"\\n\");\n+}"
+  },
+  {
+    "sha": "6fbdcdcb16e0f609f6379ba41b347f6dc3ec40fb",
+    "filename": "src/format.ts",
+    "status": "modified",
+    "additions": 2,
+    "deletions": 1,
+    "changes": 3,
+    "blob_url": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/blob/518baaa82bd86dfbcc6d22dd3e03477115d28716/src%2Fformat.ts",
+    "raw_url": "https://github.com/priyansh-narang2308/reviewaloud-sandbox/raw/518baaa82bd86dfbcc6d22dd3e03477115d28716/src%2Fformat.ts",
+    "contents_url": "https://api.github.com/repos/priyansh-narang2308/reviewaloud-sandbox/contents/src%2Fformat.ts?ref=518baaa82bd86dfbcc6d22dd3e03477115d28716",
+    "patch": "@@ -1,5 +1,6 @@\n export function formatPrice(amount: number): string {\n-  return \"Rs \" + amount.toFixed(2);\n+  const rupees = amount.toFixed(2);\n+  return `₹${rupees}`;\n }\n \n export function formatQuantity(q: number): string {"
+  }
+]

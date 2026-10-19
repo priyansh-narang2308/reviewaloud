@@ -3,7 +3,7 @@
 Workflow: **Speak → Anchor → Review → Publish → Verify → Follow up.** The reviewer approves every external write.
 
 ## Stack
-Next.js 16 (App Router) · TypeScript strict · Tailwind 4 · Zod 4 · Vitest · Playwright · Anthropic SDK (server-only) · Vercel Hobby. No database: drafts and reviewer overrides live in `localStorage` (keyed `owner/repo#pr@headSha`); the GitHub user token lives in an encrypted httpOnly session cookie.
+Next.js 16 (App Router) · TypeScript strict · Tailwind 4 · Zod 4 · Vitest · Playwright · OpenRouter (free models, OpenAI-compatible HTTP, server-only) · Vercel Hobby. No database: drafts and reviewer overrides live in `localStorage` (keyed `owner/repo#pr@headSha`); the GitHub user token lives in an encrypted httpOnly session cookie.
 
 ## Layout
 ```
@@ -11,7 +11,7 @@ app/            routes: landing, /demo, /pr/[owner]/[repo]/[n], /api/*
 lib/diff/       pure diff parsing + anchor mapping (unit-tested heavily)
 lib/github/     REST/GraphQL wrappers with typed errors
 lib/ledger/     gather → signals → rules → AI verify → evidence validation
-lib/ai/         Anthropic client, budgets
+lib/ai/         OpenRouter client, model fallback, budgets
 lib/store/      client review store
 components/     diff/, capture/, cards/, ledger/, ui/
 fixtures/       demo PR snapshot, eval scenarios
@@ -31,7 +31,7 @@ No Wispr SDK/API is used or assumed. Per Wispr's help center, dictated text is i
 |---|---|
 | githubAuth | `GITHUB_APP_CLIENT_ID`, `GITHUB_APP_CLIENT_SECRET`, `GITHUB_APP_SLUG` |
 | publicRead | `GITHUB_PUBLIC_READ_TOKEN` |
-| ai | `ANTHROPIC_API_KEY` |
+| ai | `OPENROUTER_API_KEY` (+ optional `OPENROUTER_MODEL`, `OPENROUTER_FALLBACK_MODELS`) |
 | session | `SESSION_SECRET` |
 | optional | `APP_URL`, `WRITE_REPO_ALLOWLIST`, `AI_DAILY_CALL_CAP` |
 
@@ -50,4 +50,4 @@ After creating: copy the Client ID, generate a client secret, note the app slug 
 Addressed · Unresolved · Needs human verification · Reply needed. "Addressed" requires at least one evidence quote that matches the head code at the cited lines and no matching contradicting quote. CI results are context only. Threads are never auto-resolved. No confidence percentages.
 
 ## Security
-Tokens server-side only · origin check + SameSite=Lax on POSTs · Zod on all inputs and model outputs · optional write allowlist · per-session AI cap + Anthropic spend limit · repo content passed to models inside delimited untrusted blocks · all model/repo text rendered as plain text · consent before sending private repo code to Anthropic.
+Tokens server-side only · origin check + SameSite=Lax on POSTs · Zod on all inputs and model outputs · optional write allowlist · per-session AI cap + free-tier daily limit · repo content passed to models inside delimited untrusted blocks · all model/repo text rendered as plain text · consent before sending private repo code to OpenRouter (free-model providers may log prompts).

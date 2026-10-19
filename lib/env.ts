@@ -11,7 +11,19 @@ const schema = z.object({
   GITHUB_APP_CLIENT_SECRET: z.string().min(1).optional(),
   GITHUB_APP_SLUG: z.string().min(1).optional(),
   GITHUB_PUBLIC_READ_TOKEN: z.string().min(1).optional(),
-  ANTHROPIC_API_KEY: z.string().min(1).optional(),
+  OPENROUTER_API_KEY: z.string().min(1).optional(),
+  // Primary model, then comma-separated fallbacks tried in order. Free
+  // (":free") models are rate-limited (20/min; 50/day without purchased credits).
+  OPENROUTER_MODEL: z.string().min(1).default("nvidia/nemotron-3-super-120b-a12b:free"),
+  OPENROUTER_FALLBACK_MODELS: z
+    .string()
+    .default("nvidia/nemotron-3.5-super-vl:free,google/gemma-4-31b-it:free")
+    .transform((v) =>
+      v
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
   SESSION_SECRET: z.string().min(32, "must be at least 32 characters").optional(),
   APP_URL: z.url().optional(),
   // Comma-separated owner/repo list. When set, write actions are refused for
@@ -28,7 +40,7 @@ const schema = z.object({
         : undefined,
     )
     .pipe(z.array(repoSlug).optional()),
-  AI_DAILY_CALL_CAP: z.coerce.number().int().positive().default(60),
+  AI_DAILY_CALL_CAP: z.coerce.number().int().positive().default(40),
 });
 
 export type ServerEnv = z.infer<typeof schema>;
@@ -70,7 +82,7 @@ type Feature = "githubAuth" | "publicRead" | "ai" | "session";
 const requirements: Record<Feature, (keyof ServerEnv)[]> = {
   githubAuth: ["GITHUB_APP_CLIENT_ID", "GITHUB_APP_CLIENT_SECRET", "GITHUB_APP_SLUG"],
   publicRead: ["GITHUB_PUBLIC_READ_TOKEN"],
-  ai: ["ANTHROPIC_API_KEY"],
+  ai: ["OPENROUTER_API_KEY"],
   session: ["SESSION_SECRET"],
 };
 

@@ -4,16 +4,25 @@ import { MissingEnvError, missingFor, parseEnv, requireFeature } from "./env";
 describe("parseEnv", () => {
   it("boots with no variables so the demo needs no credentials", () => {
     const e = parseEnv({});
-    expect(e.AI_DAILY_CALL_CAP).toBe(60);
+    expect(e.AI_DAILY_CALL_CAP).toBe(40);
+    expect(e.OPENROUTER_MODEL).toMatch(/:free$/);
+    expect(e.OPENROUTER_FALLBACK_MODELS.length).toBeGreaterThan(0);
     expect(e.WRITE_REPO_ALLOWLIST).toBeUndefined();
   });
 
   it("treats empty strings as unset", () => {
-    expect(parseEnv({ ANTHROPIC_API_KEY: "" }).ANTHROPIC_API_KEY).toBeUndefined();
+    expect(parseEnv({ OPENROUTER_API_KEY: "" }).OPENROUTER_API_KEY).toBeUndefined();
   });
 
   it("rejects a short session secret and names the variable", () => {
     expect(() => parseEnv({ SESSION_SECRET: "short" })).toThrow(/SESSION_SECRET/);
+  });
+
+  it("parses the model fallback list", () => {
+    expect(parseEnv({ OPENROUTER_FALLBACK_MODELS: "a:free, b:free" }).OPENROUTER_FALLBACK_MODELS).toEqual([
+      "a:free",
+      "b:free",
+    ]);
   });
 
   it("parses and validates the write allowlist", () => {
@@ -34,11 +43,11 @@ describe("feature requirements", () => {
       expect.unreachable();
     } catch (err) {
       expect(err).toBeInstanceOf(MissingEnvError);
-      expect((err as Error).message).toContain("ANTHROPIC_API_KEY");
+      expect((err as Error).message).toContain("OPENROUTER_API_KEY");
     }
   });
 
   it("passes when the feature is configured", () => {
-    expect(() => requireFeature("ai", parseEnv({ ANTHROPIC_API_KEY: "k" }))).not.toThrow();
+    expect(() => requireFeature("ai", parseEnv({ OPENROUTER_API_KEY: "k" }))).not.toThrow();
   });
 });
