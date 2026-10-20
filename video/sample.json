@@ -1,0 +1,3 @@
+{ "voice": "af_heart", "speed": 1, "segments": [
+  { "id": "sample", "text": "AI agents write a lot of our code now. We still review it. But when the agent says, addressed all review comments... who actually checks? This is ReviewAloud." }
+] }

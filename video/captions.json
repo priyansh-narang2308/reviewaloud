@@ -1,0 +1,962 @@
+{
+ "n01": {
+  "duration": 4.725,
+  "words": [
+   {
+    "text": "AI",
+    "start": 0.14,
+    "end": 0.46
+   },
+   {
+    "text": "agents",
+    "start": 0.46,
+    "end": 1.08
+   },
+   {
+    "text": "write",
+    "start": 1.08,
+    "end": 1.42
+   },
+   {
+    "text": "a",
+    "start": 1.42,
+    "end": 1.58
+   },
+   {
+    "text": "lot",
+    "start": 1.58,
+    "end": 1.72
+   },
+   {
+    "text": "of",
+    "start": 1.72,
+    "end": 1.84
+   },
+   {
+    "text": "our",
+    "start": 1.84,
+    "end": 1.96
+   },
+   {
+    "text": "code",
+    "start": 1.96,
+    "end": 2.16
+   },
+   {
+    "text": "now.",
+    "start": 2.16,
+    "end": 2.48
+   },
+   {
+    "text": "We",
+    "start": 2.96,
+    "end": 3.04
+   },
+   {
+    "text": "still",
+    "start": 3.04,
+    "end": 3.24
+   },
+   {
+    "text": "have",
+    "start": 3.24,
+    "end": 3.5
+   },
+   {
+    "text": "to",
+    "start": 3.5,
+    "end": 3.66
+   },
+   {
+    "text": "review",
+    "start": 3.66,
+    "end": 3.9
+   },
+   {
+    "text": "it.",
+    "start": 3.9,
+    "end": 4.18
+   }
+  ]
+ },
+ "n02": {
+  "duration": 5.075,
+  "words": [
+   {
+    "text": "And",
+    "start": 0,
+    "end": 0.4
+   },
+   {
+    "text": "when",
+    "start": 0.4,
+    "end": 0.48
+   },
+   {
+    "text": "the",
+    "start": 0.48,
+    "end": 0.58
+   },
+   {
+    "text": "agent",
+    "start": 0.58,
+    "end": 0.84
+   },
+   {
+    "text": "says",
+    "start": 0.84,
+    "end": 1.24
+   },
+   {
+    "text": "“addressed",
+    "start": 1.6,
+    "end": 1.78
+   },
+   {
+    "text": "all",
+    "start": 1.78,
+    "end": 2.16
+   },
+   {
+    "text": "review",
+    "start": 2.16,
+    "end": 2.38
+   },
+   {
+    "text": "comments”…",
+    "start": 2.38,
+    "end": 2.92
+   },
+   {
+    "text": "who",
+    "start": 3.36,
+    "end": 3.62
+   },
+   {
+    "text": "actually",
+    "start": 3.62,
+    "end": 3.88
+   },
+   {
+    "text": "checks?",
+    "start": 3.88,
+    "end": 4.38
+   }
+  ]
+ },
+ "n03": {
+  "duration": 1.925,
+  "words": [
+   {
+    "text": "Meet",
+    "start": 0.56,
+    "end": 0.74
+   },
+   {
+    "text": "ReviewAloud.",
+    "start": 0.74,
+    "end": 1.3
+   }
+  ]
+ },
+ "n04": {
+  "duration": 6.175,
+  "words": [
+   {
+    "text": "Open",
+    "start": 0,
+    "end": 0.6
+   },
+   {
+    "text": "a",
+    "start": 0.6,
+    "end": 0.7
+   },
+   {
+    "text": "pull",
+    "start": 0.7,
+    "end": 0.86
+   },
+   {
+    "text": "request.",
+    "start": 0.86,
+    "end": 1.26
+   },
+   {
+    "text": "Click",
+    "start": 2.22,
+    "end": 2.22
+   },
+   {
+    "text": "a",
+    "start": 2.22,
+    "end": 2.28
+   },
+   {
+    "text": "line,",
+    "start": 2.28,
+    "end": 2.58
+   },
+   {
+    "text": "hold",
+    "start": 2.84,
+    "end": 3.12
+   },
+   {
+    "text": "your",
+    "start": 3.12,
+    "end": 3.26
+   },
+   {
+    "text": "Wispr",
+    "start": 3.26,
+    "end": 3.54
+   },
+   {
+    "text": "Flow",
+    "start": 3.54,
+    "end": 3.84
+   },
+   {
+    "text": "key,",
+    "start": 3.84,
+    "end": 4.12
+   },
+   {
+    "text": "and",
+    "start": 4.46,
+    "end": 4.58
+   },
+   {
+    "text": "just",
+    "start": 4.58,
+    "end": 4.72
+   },
+   {
+    "text": "say",
+    "start": 4.72,
+    "end": 4.94
+   },
+   {
+    "text": "what",
+    "start": 4.94,
+    "end": 5.16
+   },
+   {
+    "text": "you",
+    "start": 5.16,
+    "end": 5.3
+   },
+   {
+    "text": "see.",
+    "start": 5.3,
+    "end": 5.54
+   }
+  ]
+ },
+ "n05": {
+  "duration": 5.1,
+  "words": [
+   {
+    "text": "Wispr",
+    "start": 0.26,
+    "end": 0.62
+   },
+   {
+    "text": "Flow",
+    "start": 0.62,
+    "end": 0.82
+   },
+   {
+    "text": "types",
+    "start": 0.82,
+    "end": 1.08
+   },
+   {
+    "text": "your",
+    "start": 1.08,
+    "end": 1.36
+   },
+   {
+    "text": "words",
+    "start": 1.36,
+    "end": 1.58
+   },
+   {
+    "text": "straight",
+    "start": 1.58,
+    "end": 1.9
+   },
+   {
+    "text": "into",
+    "start": 1.9,
+    "end": 2.2
+   },
+   {
+    "text": "the",
+    "start": 2.2,
+    "end": 2.34
+   },
+   {
+    "text": "review,",
+    "start": 2.34,
+    "end": 2.6
+   },
+   {
+    "text": "pinned",
+    "start": 3.36,
+    "end": 3.38
+   },
+   {
+    "text": "to",
+    "start": 3.38,
+    "end": 3.62
+   },
+   {
+    "text": "that",
+    "start": 3.62,
+    "end": 3.78
+   },
+   {
+    "text": "exact",
+    "start": 3.78,
+    "end": 3.92
+   },
+   {
+    "text": "line.",
+    "start": 3.92,
+    "end": 4.48
+   }
+  ]
+ },
+ "n06": {
+  "duration": 3.25,
+  "words": [
+   {
+    "text": "Mark",
+    "start": 0,
+    "end": 0.5
+   },
+   {
+    "text": "what’s",
+    "start": 0.5,
+    "end": 0.8
+   },
+   {
+    "text": "blocking,",
+    "start": 0.8,
+    "end": 1.18
+   },
+   {
+    "text": "and",
+    "start": 1.18,
+    "end": 1.66
+   },
+   {
+    "text": "what’s",
+    "start": 1.66,
+    "end": 1.94
+   },
+   {
+    "text": "just",
+    "start": 1.94,
+    "end": 2.08
+   },
+   {
+    "text": "a",
+    "start": 2.08,
+    "end": 2.2
+   },
+   {
+    "text": "question.",
+    "start": 2.2,
+    "end": 2.6
+   }
+  ]
+ },
+ "n07": {
+  "duration": 6.35,
+  "words": [
+   {
+    "text": "Then",
+    "start": 0,
+    "end": 0.38
+   },
+   {
+    "text": "publish",
+    "start": 0.38,
+    "end": 0.68
+   },
+   {
+    "text": "a",
+    "start": 0.68,
+    "end": 0.92
+   },
+   {
+    "text": "real",
+    "start": 0.92,
+    "end": 1.2
+   },
+   {
+    "text": "GitHub",
+    "start": 1.2,
+    "end": 1.46
+   },
+   {
+    "text": "review.",
+    "start": 1.46,
+    "end": 1.96
+   },
+   {
+    "text": "A",
+    "start": 2.64,
+    "end": 2.64
+   },
+   {
+    "text": "draft",
+    "start": 2.64,
+    "end": 2.8
+   },
+   {
+    "text": "first.",
+    "start": 2.8,
+    "end": 3.22
+   },
+   {
+    "text": "Nothing",
+    "start": 3.82,
+    "end": 4.16
+   },
+   {
+    "text": "goes",
+    "start": 4.16,
+    "end": 4.36
+   },
+   {
+    "text": "public",
+    "start": 4.36,
+    "end": 4.78
+   },
+   {
+    "text": "until",
+    "start": 4.78,
+    "end": 5.08
+   },
+   {
+    "text": "you",
+    "start": 5.08,
+    "end": 5.26
+   },
+   {
+    "text": "confirm.",
+    "start": 5.26,
+    "end": 5.52
+   }
+  ]
+ },
+ "n08": {
+  "duration": 5.4,
+  "words": [
+   {
+    "text": "Now",
+    "start": 0,
+    "end": 0.48
+   },
+   {
+    "text": "the",
+    "start": 0.48,
+    "end": 0.66
+   },
+   {
+    "text": "agent",
+    "start": 0.66,
+    "end": 0.94
+   },
+   {
+    "text": "pushes",
+    "start": 0.94,
+    "end": 1.26
+   },
+   {
+    "text": "its",
+    "start": 1.26,
+    "end": 1.58
+   },
+   {
+    "text": "fix:",
+    "start": 1.58,
+    "end": 1.82
+   },
+   {
+    "text": "“Address",
+    "start": 2.6,
+    "end": 2.6
+   },
+   {
+    "text": "all",
+    "start": 2.6,
+    "end": 2.94
+   },
+   {
+    "text": "review",
+    "start": 2.94,
+    "end": 3.18
+   },
+   {
+    "text": "comments.”",
+    "start": 3.18,
+    "end": 3.76
+   },
+   {
+    "text": "Sounds",
+    "start": 4.28,
+    "end": 4.36
+   },
+   {
+    "text": "done.",
+    "start": 4.36,
+    "end": 4.72
+   }
+  ]
+ },
+ "n09": {
+  "duration": 5.4,
+  "words": [
+   {
+    "text": "The",
+    "start": 0,
+    "end": 0.36
+   },
+   {
+    "text": "Promise",
+    "start": 0.36,
+    "end": 0.64
+   },
+   {
+    "text": "Ledger",
+    "start": 0.64,
+    "end": 1.08
+   },
+   {
+    "text": "checks",
+    "start": 1.08,
+    "end": 1.4
+   },
+   {
+    "text": "every",
+    "start": 1.4,
+    "end": 1.8
+   },
+   {
+    "text": "request",
+    "start": 1.8,
+    "end": 2.26
+   },
+   {
+    "text": "against",
+    "start": 2.26,
+    "end": 2.64
+   },
+   {
+    "text": "the",
+    "start": 2.64,
+    "end": 2.88
+   },
+   {
+    "text": "latest",
+    "start": 2.88,
+    "end": 3.14
+   },
+   {
+    "text": "code,",
+    "start": 3.14,
+    "end": 3.5
+   },
+   {
+    "text": "in",
+    "start": 4,
+    "end": 4.12
+   },
+   {
+    "text": "your",
+    "start": 4.12,
+    "end": 4.24
+   },
+   {
+    "text": "own",
+    "start": 4.24,
+    "end": 4.42
+   },
+   {
+    "text": "words.",
+    "start": 4.42,
+    "end": 4.7
+   }
+  ]
+ },
+ "n10": {
+  "duration": 4.725,
+  "words": [
+   {
+    "text": "The",
+    "start": 0.38,
+    "end": 0.6
+   },
+   {
+    "text": "unknown-coupon",
+    "start": 0.6,
+    "end": 1.06
+   },
+   {
+    "text": "bug?",
+    "start": 1.06,
+    "end": 1.5
+   },
+   {
+    "text": "Fixed.",
+    "start": 1.96,
+    "end": 2.22
+   },
+   {
+    "text": "And",
+    "start": 2.7,
+    "end": 2.8
+   },
+   {
+    "text": "here’s",
+    "start": 2.8,
+    "end": 3.12
+   },
+   {
+    "text": "the",
+    "start": 3.12,
+    "end": 3.22
+   },
+   {
+    "text": "line",
+    "start": 3.22,
+    "end": 3.48
+   },
+   {
+    "text": "that",
+    "start": 3.48,
+    "end": 3.66
+   },
+   {
+    "text": "proves",
+    "start": 3.66,
+    "end": 3.88
+   },
+   {
+    "text": "it.",
+    "start": 3.88,
+    "end": 4.16
+   }
+  ]
+ },
+ "n11": {
+  "duration": 4.65,
+  "words": [
+   {
+    "text": "The",
+    "start": 0,
+    "end": 0.36
+   },
+   {
+    "text": "clamp",
+    "start": 0.36,
+    "end": 0.5
+   },
+   {
+    "text": "you",
+    "start": 0.5,
+    "end": 0.7
+   },
+   {
+    "text": "asked",
+    "start": 0.7,
+    "end": 0.88
+   },
+   {
+    "text": "for?",
+    "start": 0.88,
+    "end": 1.22
+   },
+   {
+    "text": "Missing.",
+    "start": 1.7,
+    "end": 1.8
+   },
+   {
+    "text": "The",
+    "start": 2.58,
+    "end": 2.6
+   },
+   {
+    "text": "agent",
+    "start": 2.6,
+    "end": 2.86
+   },
+   {
+    "text": "only",
+    "start": 2.86,
+    "end": 3.28
+   },
+   {
+    "text": "added",
+    "start": 3.28,
+    "end": 3.56
+   },
+   {
+    "text": "a",
+    "start": 3.56,
+    "end": 3.68
+   },
+   {
+    "text": "comment.",
+    "start": 3.68,
+    "end": 4
+   }
+  ]
+ },
+ "n12": {
+  "duration": 5.675,
+  "words": [
+   {
+    "text": "Every",
+    "start": 0,
+    "end": 0.52
+   },
+   {
+    "text": "verdict",
+    "start": 0.52,
+    "end": 0.84
+   },
+   {
+    "text": "quotes",
+    "start": 0.84,
+    "end": 1.26
+   },
+   {
+    "text": "real",
+    "start": 1.26,
+    "end": 1.56
+   },
+   {
+    "text": "code,",
+    "start": 1.56,
+    "end": 1.94
+   },
+   {
+    "text": "and",
+    "start": 2.58,
+    "end": 2.64
+   },
+   {
+    "text": "every",
+    "start": 2.64,
+    "end": 2.88
+   },
+   {
+    "text": "quote",
+    "start": 2.88,
+    "end": 3.24
+   },
+   {
+    "text": "is",
+    "start": 3.24,
+    "end": 3.44
+   },
+   {
+    "text": "checked",
+    "start": 3.44,
+    "end": 3.7
+   },
+   {
+    "text": "against",
+    "start": 3.7,
+    "end": 4.1
+   },
+   {
+    "text": "the",
+    "start": 4.1,
+    "end": 4.28
+   },
+   {
+    "text": "actual",
+    "start": 4.28,
+    "end": 4.46
+   },
+   {
+    "text": "file.",
+    "start": 4.46,
+    "end": 5.02
+   }
+  ]
+ },
+ "n13": {
+  "duration": 4.7,
+  "words": [
+   {
+    "text": "One",
+    "start": 0,
+    "end": 0.5
+   },
+   {
+    "text": "click",
+    "start": 0.5,
+    "end": 0.78
+   },
+   {
+    "text": "hands",
+    "start": 0.78,
+    "end": 1.02
+   },
+   {
+    "text": "it",
+    "start": 1.02,
+    "end": 1.2
+   },
+   {
+    "text": "back",
+    "start": 1.2,
+    "end": 1.36
+   },
+   {
+    "text": "to",
+    "start": 1.36,
+    "end": 1.58
+   },
+   {
+    "text": "the",
+    "start": 1.58,
+    "end": 1.66
+   },
+   {
+    "text": "agent,",
+    "start": 1.66,
+    "end": 1.94
+   },
+   {
+    "text": "in",
+    "start": 1.94,
+    "end": 2.58
+   },
+   {
+    "text": "exactly",
+    "start": 2.58,
+    "end": 2.88
+   },
+   {
+    "text": "the",
+    "start": 2.88,
+    "end": 3.3
+   },
+   {
+    "text": "words",
+    "start": 3.3,
+    "end": 3.5
+   },
+   {
+    "text": "you",
+    "start": 3.5,
+    "end": 3.7
+   },
+   {
+    "text": "used.",
+    "start": 3.7,
+    "end": 4.06
+   }
+  ]
+ },
+ "n14": {
+  "duration": 3.15,
+  "words": [
+   {
+    "text": "One",
+    "start": 0,
+    "end": 0.42
+   },
+   {
+    "text": "of",
+    "start": 0.42,
+    "end": 0.5
+   },
+   {
+    "text": "three",
+    "start": 0.5,
+    "end": 0.7
+   },
+   {
+    "text": "promises",
+    "start": 0.7,
+    "end": 1.08
+   },
+   {
+    "text": "kept.",
+    "start": 1.08,
+    "end": 1.44
+   },
+   {
+    "text": "Now",
+    "start": 2.02,
+    "end": 2.12
+   },
+   {
+    "text": "you",
+    "start": 2.12,
+    "end": 2.3
+   },
+   {
+    "text": "know.",
+    "start": 2.3,
+    "end": 2.52
+   }
+  ]
+ },
+ "n15": {
+  "duration": 4.15,
+  "words": [
+   {
+    "text": "ReviewAloud.",
+    "start": 0.52,
+    "end": 0.8
+   },
+   {
+    "text": "Review",
+    "start": 1.52,
+    "end": 1.52
+   },
+   {
+    "text": "by",
+    "start": 1.52,
+    "end": 1.76
+   },
+   {
+    "text": "voice.",
+    "start": 1.76,
+    "end": 1.98
+   },
+   {
+    "text": "Prove",
+    "start": 2.5,
+    "end": 2.68
+   },
+   {
+    "text": "the",
+    "start": 2.68,
+    "end": 2.86
+   },
+   {
+    "text": "fix",
+    "start": 2.86,
+    "end": 3.04
+   },
+   {
+    "text": "landed.",
+    "start": 3.04,
+    "end": 3.52
+   }
+  ]
+ }
+}

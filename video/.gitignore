@@ -1,0 +1,12 @@
+node_modules
+out
+audio/*.wav
+footage/*
+!footage/.gitkeep
+.cache
+public/*.wav
+public/*.mov
+public/*.mp4
+public/*.png
+footage/*.png
+audio/*.m4a

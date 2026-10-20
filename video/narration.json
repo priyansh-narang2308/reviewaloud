@@ -1,0 +1,21 @@
+{
+  "voice": "af_heart",
+  "speed": 0.96,
+  "segments": [
+    { "id": "n01", "text": "AI agents write a lot of our code now. We still have to review it.", "caption": "AI agents write a lot of our code now. We still have to review it." },
+    { "id": "n02", "text": "And when the agent says, addressed all review comments... who actually checks?", "caption": "And when the agent says “addressed all review comments”… who actually checks?" },
+    { "id": "n03", "text": "Meet Review Aloud.", "caption": "Meet ReviewAloud." },
+    { "id": "n04", "text": "Open a pull request. Click a line, hold your Whisper Flow key, and just say what you see.", "caption": "Open a pull request. Click a line, hold your Wispr Flow key, and just say what you see." },
+    { "id": "n05", "text": "Whisper Flow types your words straight into the review, pinned to that exact line.", "caption": "Wispr Flow types your words straight into the review, pinned to that exact line." },
+    { "id": "n06", "text": "Mark what's blocking, and what's just a question.", "caption": "Mark what’s blocking, and what’s just a question." },
+    { "id": "n07", "text": "Then publish a real GitHub review. A draft first. Nothing goes public until you confirm.", "caption": "Then publish a real GitHub review. A draft first. Nothing goes public until you confirm." },
+    { "id": "n08", "text": "Now the agent pushes its fix. Address all review comments. Sounds done.", "caption": "Now the agent pushes its fix: “Address all review comments.” Sounds done." },
+    { "id": "n09", "text": "The Promise Ledger checks every request against the latest code, in your own words.", "caption": "The Promise Ledger checks every request against the latest code, in your own words." },
+    { "id": "n10", "text": "The unknown coupon bug? Fixed. And here's the line that proves it.", "caption": "The unknown-coupon bug? Fixed. And here’s the line that proves it." },
+    { "id": "n11", "text": "The clamp you asked for? Missing. The agent only added a comment.", "caption": "The clamp you asked for? Missing. The agent only added a comment." },
+    { "id": "n12", "text": "Every verdict quotes real code, and every quote is checked against the actual file.", "caption": "Every verdict quotes real code, and every quote is checked against the actual file." },
+    { "id": "n13", "text": "One click hands it back to the agent, in exactly the words you used.", "caption": "One click hands it back to the agent, in exactly the words you used." },
+    { "id": "n14", "text": "One of three promises kept. Now you know.", "caption": "One of three promises kept. Now you know." },
+    { "id": "n15", "text": "Review Aloud. Review by voice. Prove the fix landed.", "caption": "ReviewAloud. Review by voice. Prove the fix landed." }
+  ]
+}
